@@ -1,8 +1,11 @@
 import './Map.css';
+import kartta from './imgs/karttaesim.png';
 
 function Map(){
 	return (
-		<div className="map" style={{backgroundColor: "#bbb"}}>Kartta</div>
+		<div className="map" style={{backgroundColor: "#bbb"}}>
+			<img src={kartta}/>
+		</div>
 	);
 }
 

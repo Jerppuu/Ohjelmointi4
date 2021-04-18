@@ -22,11 +22,19 @@ ReactDOM.render(
             <WeekView/>
             <Map/>
         </div>
-        <div className="footer">
-            <div className="nav" style={{textAlign: "center"}}>Meistä</div>
-            <div className="nav" style={{textAlign: "center"}}>Ohjeet</div>
-            <div className="nav" style={{textAlign: "center"}}>Sivustokartta</div>
-        </div>
+        <nav className="navbar navbar-expand-sm bg-primary navbar-dark">
+            <ul className="navbar-nav">
+                <li className="nav-item">
+                    <a className="nav-link" href="#">Meistä</a>
+                </li>
+                <li className="nav-item">
+                    <a className="nav-link" href="#">Ohjeet</a>
+                </li>
+                <li className="nav-item">
+                    <a className="nav-link" href="#">Sivustokartta</a>
+                </li>
+            </ul>
+        </nav>
     </React.StrictMode>,
   document.getElementById('root')
 );
