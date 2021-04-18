@@ -30,6 +30,7 @@ body {
   display: -webkit-flex;
   display: flex;
   flex-direction: row;
+  align-content: space-evenly;
 }
 
 .weekdays {

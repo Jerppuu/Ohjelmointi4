@@ -2,6 +2,6 @@
     display: -webkit-flex;
     display: flex;
     flex-direction: row;
-    min-width:50%;
-    align-content: center;
+    min-width:40%;
+    backgroundColor: #fff;
 }

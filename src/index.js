@@ -22,7 +22,7 @@ ReactDOM.render(
             <WeekView/>
             <Map/>
         </div>
-        <nav className="navbar navbar-expand-sm bg-primary navbar-dark">
+        <nav className="navbar navbar-expand-sm bg-primary navbar-dark" style={{position: "fixed",bottom: 0, width: "100%", height: "30px"}}>
             <ul className="navbar-nav">
                 <li className="nav-item">
                     <a className="nav-link" href="#">Meistä</a>
