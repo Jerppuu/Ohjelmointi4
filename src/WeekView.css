@@ -5,8 +5,8 @@
 
 .day {
     flex: 1;
-    height: 120px;
-    flex-basis: 70px;
+    height: 7em;
+    flex-basis: 7em;
 }
 
 .nav {
@@ -14,4 +14,9 @@
     align-items: stretch;
     padding: 0px;
     justify-content: space-evenly;
+}
+
+.column {
+    flex: fit-content;
+    max-height: 16em;
 }
