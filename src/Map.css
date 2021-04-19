@@ -1,7 +1,6 @@
 .map {
-    display: -webkit-flex;
     display: flex;
     flex-direction: row;
-    min-width:40%;
-    backgroundColor: #fff;
+    min-width:50%;
+    justify-items: center;
 }

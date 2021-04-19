@@ -2,14 +2,14 @@ import './Search.css';
 
 function Search() {
 	return (
-		<div className="column" style={{height: "100px",backgroundColor: "#ccc"}}>
+		<div className="column">
 			<label for={"valitse-paikkakunta"}>Valitse paikkakunta:</label>
 			<input list={"paikkakunta-lista"} id={"valitse-paikkakunta"}/>
 			<datalist id={"paikkakunta-lista"}>
 				<option value={"kuusamo"}/>
 				<option value={"oulu"}/>
 				<option value={"helsinki"}/>
-			</datalist>
+			</datalist><button>Hae</button>
 		</div>
 	);
 }

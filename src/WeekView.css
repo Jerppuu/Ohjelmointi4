@@ -1,7 +1,17 @@
+.weekdays {
+    display: flex;
+    flex-wrap: wrap;
+}
+
 .day {
-    -webkit-flex: 1;
-    -ms-flex: 1;
     flex: 1;
-    height: 120px; /* Should be removed. Only for demonstration */
+    height: 120px;
     flex-basis: 70px;
+}
+
+.nav {
+    display: flex;
+    align-items: stretch;
+    padding: 0px;
+    justify-content: space-evenly;
 }

@@ -14,9 +14,9 @@ function WeekView() {
 				<div className="day" style={{backgroundColor: "#777"}}>Su</div>
 			</div>
 			<div className="nav">
-				<div className="nav" style={{textAlign: "left"}}>edellinen</div>
-				<div className="nav" style={{textAlign: "center"}}>viikko 1</div>
-				<div className="nav" style={{textAlign: "right"}}>seuraava</div>
+				<div style={{backgroundColor: "lightblue"}}>edellinen</div>
+				<div >viikko 1</div>
+				<div style={{backgroundColor: "lightblue"}}>seuraava</div>
 			</div>
 		</div>
 	);
