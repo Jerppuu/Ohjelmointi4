@@ -1,0 +1,22 @@
+.weekdays {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.day {
+    flex: 1;
+    height: 7em;
+    flex-basis: 7em;
+}
+
+.nav {
+    display: flex;
+    align-items: stretch;
+    padding: 0px;
+    justify-content: space-evenly;
+}
+
+.column {
+    flex: fit-content;
+    max-height: 16em;
+}
