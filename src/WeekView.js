@@ -1,5 +1,4 @@
 
-import './WeekView.css';
 
 function WeekView() {
 	return (

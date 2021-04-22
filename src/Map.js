@@ -1,10 +1,9 @@
-import './Map.css';
 import kartta from './imgs/karttaesim.png';
 
-function Map(){
+function Map() {
 	return (
-		<div className="map" >
-			<img src={kartta}/>
+		<div className="map">
+			<img src={kartta} alt="Map"/>
 		</div>
 	);
 }

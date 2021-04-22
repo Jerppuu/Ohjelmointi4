@@ -11,12 +11,20 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+
+
 .header {
   background-color: #f0f0f0;
-  padding: 10px 0px 10px 10px;
+  padding: 10px 0 10px 10px;
   text-align: left;
   font-size: 20px;
   height: 50px;
+}
+
+.mainBody{
+  display: flex;
+  flex: 2;
+  justify-content: space-between;
 }
 
 .row {
@@ -25,8 +33,11 @@ body {
 
 .column {
   flex: 1;
-  padding: 0px 0px 0px 15px;
+  padding: 0 0 0 15px;
   background-color: #f0f0f0;
+  min-width: 40%;
+  flex: fit-content;
+  max-height: 16em;
 }
 
 .footer {
@@ -37,8 +48,37 @@ body {
   flex-direction: row;
 }
 
+.map {
+  display: flex;
+  flex-direction: row;
+  min-width:50%;
+  justify-items: center;
+}
+
+.weekdays {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.day {
+  flex: 1;
+  height: 7em;
+  flex-basis: 7em;
+}
+
+.nav {
+  display: flex;
+  align-items: stretch;
+  padding: 0;
+  justify-content: space-evenly;
+}
+
+
 @media (max-width: 540px) {
   .row {
     flex-direction: column;
+  }
+  .header{
+    height: 100px;
   }
 }

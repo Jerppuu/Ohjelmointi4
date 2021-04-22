@@ -1,4 +1,3 @@
-import './TodayPreview.css';
 
 function TodayPreview() {
 	return (
