@@ -11,41 +11,35 @@ import Logo from "./Logo";
 
 ReactDOM.render(
     <React.StrictMode>
-        <div className="header">
-            <div className="row">
-                <Logo/>
-                <Search/>
-            </div>
-        </div>
-
-        <div className="mainBody">
-            <div>
+        <body>
+            <div className="header">
                 <div className="row">
-                    <TodayPreview/>
+                    <Logo/>
+                    <Search/>
                 </div>
-
-                <div className="row">
+            </div>
+            <div className="row">
+                <div className="column">
+                    <TodayPreview/>
                     <WeekView/>
                 </div>
-            </div>
-            <div>
                 <Map/>
             </div>
-        </div>
 
-        <nav className="navbar navbar-expand-sm bg-primary navbar-dark" style={{position: "fixed",bottom: 0, width: "100%", height: "30px"}}>
-            <ul className="navbar-nav">
-                <li className="nav-item">
-                    <a className="nav-link" href="#">Meistä</a>
-                </li>
-                <li className="nav-item">
-                    <a className="nav-link" href="#">Ohjeet</a>
-                </li>
-                <li className="nav-item">
-                    <a className="nav-link" href="#">Sivustokartta</a>
-                </li>
-            </ul>
-        </nav>
+            <nav className="navbar navbar-expand-sm bg-primary navbar-dark" style={{position: "fixed",bottom: 0, width: "100%", height: "30px"}}>
+                <ul className="navbar-nav">
+                    <li className="nav-item">
+                        <a className="nav-link" href="#">Meistä</a>
+                    </li>
+                    <li className="nav-item">
+                        <a className="nav-link" href="#">Ohjeet</a>
+                    </li>
+                    <li className="nav-item">
+                        <a className="nav-link" href="#">Sivustokartta</a>
+                    </li>
+                </ul>
+            </nav>
+        </body>
     </React.StrictMode>,
   document.getElementById('root')
 );

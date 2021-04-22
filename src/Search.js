@@ -1,8 +1,7 @@
 
 function Search() {
 	return (
-		<div className="column">
-			<label for={"valitse-paikkakunta"}>Valitse paikkakunta:</label>
+		<div>
 			<input list={"paikkakunta-lista"} id={"valitse-paikkakunta"}/>
 			<datalist id={"paikkakunta-lista"}>
 				<option value={"kuusamo"}/>

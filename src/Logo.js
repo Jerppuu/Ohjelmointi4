@@ -2,7 +2,7 @@ import React from 'react';
 
 function Logo() {
     return (
-        <div className="column">
+        <div>
             Säätieto.fi
         </div>
     );
