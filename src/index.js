@@ -13,18 +13,20 @@ ReactDOM.render(
     <React.StrictMode>
         <body>
             <div className="header">
-                <div className="row">
                     <Logo/>
                     <Search/>
-                </div>
             </div>
-            <div className="row">
-                <div className="column">
+
+            <div className="mainBody">
+                <div className="leftSide">
                     <TodayPreview/>
                     <WeekView/>
                 </div>
                 <Map/>
+
             </div>
+
+
 
             <nav className="navbar navbar-expand-sm bg-primary navbar-dark" style={{position: "fixed",bottom: 0, width: "100%", height: "30px"}}>
                 <ul className="navbar-nav">
