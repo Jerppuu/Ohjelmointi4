@@ -11,10 +11,11 @@ function WeekView() {
 				<div className="day">Pe</div>
 				<div className="day">La</div>
 			</div>
-			<div className="nav" style={{gap: "10px", justifyContent: "space-evenly"}}>
-				<div style={{backgroundColor: "lightblue"}}>edellinen</div>
-				<div >viikko 1</div>
-				<div style={{backgroundColor: "lightblue"}}>seuraava</div>
+			<div className="nav">
+				<button className="navButton">Edellinen</button>
+				<div>Viikko 1</div>
+				<button className="navButton">Seuraava</button>
+
 			</div>
 		</div>
 	);
