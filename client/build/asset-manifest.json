@@ -1,0 +1,21 @@
+{
+  "files": {
+    "main.css": "/static/css/main.64b5bcf9.chunk.css",
+    "main.js": "/static/js/main.df4e6eb1.chunk.js",
+    "main.js.map": "/static/js/main.df4e6eb1.chunk.js.map",
+    "runtime-main.js": "/static/js/runtime-main.71c7f428.js",
+    "runtime-main.js.map": "/static/js/runtime-main.71c7f428.js.map",
+    "static/js/2.558759b9.chunk.js": "/static/js/2.558759b9.chunk.js",
+    "static/js/2.558759b9.chunk.js.map": "/static/js/2.558759b9.chunk.js.map",
+    "index.html": "/index.html",
+    "static/css/main.64b5bcf9.chunk.css.map": "/static/css/main.64b5bcf9.chunk.css.map",
+    "static/js/2.558759b9.chunk.js.LICENSE.txt": "/static/js/2.558759b9.chunk.js.LICENSE.txt",
+    "static/media/karttaesim.b41e0d11.png": "/static/media/karttaesim.b41e0d11.png"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.71c7f428.js",
+    "static/js/2.558759b9.chunk.js",
+    "static/css/main.64b5bcf9.chunk.css",
+    "static/js/main.df4e6eb1.chunk.js"
+  ]
+}
