@@ -4,14 +4,14 @@ The server has been configured to run from http://localhost:3001.\
 It will serve a webpage from project root ./client/build/index.html.\
 It can respond to API calls through http://localhost:3001/api/search/:location.\
 At the moment the location name starts with an uppercase letter.\
-\
+
 ## preinstalled components
 
 npm i express node-fetch\
 \
 Optionally for running as a live server:\
 \
-npm i nodemon\
+npm i nodemon
 
 ## running the server
 
@@ -19,7 +19,7 @@ from project root:\
 \
 nodemon ./server/src/index.js\
             or\
-node ./server/src/index.js\
+node ./server/src/index.js
 
 # Getting Started with Create React App
 
