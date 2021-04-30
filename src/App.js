@@ -1,30 +1,22 @@
-import React, {} from 'react';
+import * as React from 'react';
 import Logo from "./Logo";
 import Search from "./Search";
-import TodayPreview from "./TodayPreview";
-import WeekView from "./WeekView";
 import Map from "./Map";
-import DayView from "./DayView";
+import {ViewChancer} from "./ViewChancer";
+import {useState} from "react";
 
-class App extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {value: false};
-        this.buttonClicked = this.buttonClicked.bind(this);
+
+
+export function App() {
+    const [chek, setCheck] = useState(false);
+
+    function viewStateHandler() {
+        setCheck(prevCheck => !prevCheck);
+
     }
 
-    buttonClicked() {
-        this.setState({value: !this.state.value});
-    }
-
-
-
-
-    render() {
-        return (
-            <div>
-                <React.StrictMode>
-                    <body>
+    return (
+        <div>
                     <div className="header">
                         <Logo/>
                         <Search/>
@@ -32,18 +24,12 @@ class App extends React.Component {
 
                     <div className="mainBody">
                         <div className="leftSide">
-                            <TodayPreview/>
-                            <div className={this.state.value ? "hidden" : ""}>
-                                <WeekView/>
-                            </div>
-                            <div className={this.state.value ? "" : "hidden"}>
-                                <DayView/>
-                            </div>
-
+                            <ViewChancer state ={chek} />
                         </div>
                         <Map/>
                     </div>
-                    <button onClick={this.buttonClicked}>Testinappula</button>
+                    <button onClick={viewStateHandler}>Testinappula</button>
+
 
                     <nav className="navbar navbar-expand-sm bg-primary navbar-dark" style={{position: "fixed",bottom: 0, width: "100%", height: "30px"}}>
                         <ul className="navbar-nav">
@@ -58,11 +44,6 @@ class App extends React.Component {
                             </li>
                         </ul>
                     </nav>
-                    </body>
-                </React.StrictMode>
-            </div>
-        );
-    }
-}
-
-export default App;
+        </div>
+    );
+};

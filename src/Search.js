@@ -1,13 +1,24 @@
-
+import React, {useRef} from "react";
 function Search() {
+
+	const inputCity = useRef();
+
+	function handleSearch (e){
+		const city = inputCity.current.value;
+		if (city === '') return;
+		console.log(city)
+		inputCity.current.value = null;
+	}
+
 	return (
 		<div>
-			<input list={"paikkakunta-lista"} id={"valitse-paikkakunta"}/>
+			<input ref={inputCity} list={"paikkakunta-lista"} id={"valitse-paikkakunta"} type="text"/>
 			<datalist id={"paikkakunta-lista"}>
 				<option value={"kuusamo"}/>
 				<option value={"oulu"}/>
 				<option value={"helsinki"}/>
-			</datalist><button>Hae</button>
+			</datalist>
+			<button onClick={handleSearch}>Hae</button>
 		</div>
 	);
 }
