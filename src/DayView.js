@@ -1,6 +1,6 @@
 import React from 'react';
 
-function DayView() {
+function DayView(buttonPress) {
 
     return (
         <div>
@@ -13,7 +13,7 @@ function DayView() {
                 <div className="hour">18:00</div>
                 <div className="hour">21:00</div>
             </div>
-
+            <button onClick={buttonPress.buttonPress}>Takaisin</button>
         </div>
     );
 }

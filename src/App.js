@@ -2,13 +2,15 @@ import * as React from 'react';
 import Logo from "./Logo";
 import Search from "./Search";
 import Map from "./Map";
-import {ViewChancer} from "./ViewChancer";
 import {useState} from "react";
+import TodayPreview from "./TodayPreview";
+import WeekView from "./WeekView";
+import DayView from "./DayView";
 
 
 
 export function App() {
-    const [chek, setCheck] = useState(false);
+    const [check, setCheck] = useState(false);
 
     function viewStateHandler() {
         setCheck(prevCheck => !prevCheck);
@@ -24,12 +26,18 @@ export function App() {
 
                     <div className="mainBody">
                         <div className="leftSide">
-                            <ViewChancer state ={chek} />
+
+                            <TodayPreview/>
+                            <div className={check? "hidden" : ""}>
+                                <WeekView  buttonPress = {viewStateHandler}/>
+                            </div>
+                            <div className={check? "" : "hidden"}>
+                                <DayView  buttonPress = {viewStateHandler}/>
+                            </div>
+                            
                         </div>
                         <Map/>
                     </div>
-                    <button onClick={viewStateHandler}>Testinappula</button>
-
 
                     <nav className="navbar navbar-expand-sm bg-primary navbar-dark" style={{position: "fixed",bottom: 0, width: "100%", height: "30px"}}>
                         <ul className="navbar-nav">
@@ -46,4 +54,4 @@ export function App() {
                     </nav>
         </div>
     );
-};
+}
