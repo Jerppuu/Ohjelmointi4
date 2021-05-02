@@ -1,8 +1,25 @@
 import React from 'react';
 
-function DayView(buttonPress) {
+
+function DayView(props) {
+
+
+    function minusDay (){
+        if(props.day > 1) {
+            props.setDay(props.day - 1);
+        }
+    }
+
+
+    function plusDay (){
+        if (props.day < 6) {
+            props.setDay(props.day + 1);
+        }
+    }
+
 
     return (
+
         <div>
             <div className="hoursTable">
                 <div className="hour">03:00</div>
@@ -13,7 +30,17 @@ function DayView(buttonPress) {
                 <div className="hour">18:00</div>
                 <div className="hour">21:00</div>
             </div>
-            <button onClick={buttonPress.buttonPress}>Takaisin</button>
+
+            <div className="nav">
+                <button onClick={props.buttonPress} className="navButton" >Takaisin</button>
+
+                <button onClick={()=> minusDay()} className="navButton" disabled={props.day === 1}>Edellinen</button>
+
+                <div>{props.day}</div>
+
+                <button onClick={()=> plusDay()} className="navButton" disabled={props.day === 6}>Seuraava</button>
+
+            </div>
         </div>
     );
 }

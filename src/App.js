@@ -11,10 +11,15 @@ import DayView from "./DayView";
 
 export function App() {
     const [check, setCheck] = useState(false);
+    const [dayName, setDay] = useState(0);
 
-    function viewStateHandler() {
+    function viewStateHandlerWeek(dayName_var) {
         setCheck(prevCheck => !prevCheck);
+        setDay(dayName_var);
+    }
 
+    function viewStateHandlerDay() {
+        setCheck(prevCheck => !prevCheck);
     }
 
     return (
@@ -29,10 +34,10 @@ export function App() {
 
                             <TodayPreview/>
                             <div className={check? "hidden" : ""}>
-                                <WeekView  buttonPress = {viewStateHandler}/>
+                                <WeekView  buttonPress = {viewStateHandlerWeek}/>
                             </div>
                             <div className={check? "" : "hidden"}>
-                                <DayView  buttonPress = {viewStateHandler}/>
+                                <DayView buttonPress={viewStateHandlerDay}  day= {dayName} setDay = {setDay}  />
                             </div>
                             
                         </div>

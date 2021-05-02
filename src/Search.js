@@ -3,10 +3,10 @@ function Search() {
 
 	const inputCity = useRef();
 
-	function handleSearch (e){
+	function handleSearch (){
 		const city = inputCity.current.value;
 		if (city === '') return;
-		console.log(city)
+		alert(city);
 		inputCity.current.value = null;
 	}
 
