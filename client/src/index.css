@@ -53,6 +53,7 @@ body {
   height: 100px;
   width: 75px;
   border-style: solid;
+  text-align: center;
 }
 
 .nav{
@@ -82,6 +83,11 @@ body {
   border: 2px solid deepskyblue;
   background-color: white;
   color: black;
+}
+
+.navButton:disabled{
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 
