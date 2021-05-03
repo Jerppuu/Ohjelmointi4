@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<script>
+	let jsonObject = {
+		forecast: [
+            { "daily" : [] },
+            { "hourly" : [] }
+        ]
+    };
+    console.log("Stringified: " + JSON.stringify(jsonObject));
+
+    jsonObject.forecast.push({"daily":"gello!"});
+	console.log("appended: " + JSON.stringify(jsonObject));
+
+
+</script>
+
+</body>
+</html>
