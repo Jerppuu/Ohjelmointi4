@@ -1,12 +1,12 @@
 import React, {useRef} from "react";
-function Search() {
+function Search(props) {
 
 	const inputCity = useRef();
 
 	function handleSearch (){
 		const city = inputCity.current.value;
 		if (city === '') return;
-		alert(city);
+		props.getForecast(city);
 		inputCity.current.value = null;
 	}
 

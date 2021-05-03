@@ -10,23 +10,46 @@ import DayView from "./DayView";
 
 
 export function App() {
+
     const [check, setCheck] = useState(false);
     const [dayName, setDay] = useState(0);
+    const [responseJSON, setResponseJSON] = useState(null);
 
     function viewStateHandlerWeek(dayName_var) {
         setCheck(prevCheck => !prevCheck);
         setDay(dayName_var);
     }
 
-    function viewStateHandlerDay() {
+    function viewStateHandlerDay () {
         setCheck(prevCheck => !prevCheck);
     }
+
+    async function getForecast (cityName_var){
+
+        var requestOptions = {
+            method: 'GET',
+            redirect: 'follow'
+        };
+
+        let promise = fetch("http://localhost:3001/api/search/" + cityName_var, requestOptions)
+            .then(response => response.json())
+            .catch(error => console.log('error', error));
+        let response = await promise;
+        console.log(JSON.stringify(response));
+        setResponseJSON(response);
+
+
+    }
+
+
+
+
 
     return (
         <div>
                     <div className="header">
                         <Logo/>
-                        <Search/>
+                        <Search getForecast = {getForecast}/>
                     </div>
 
                     <div className="mainBody">
