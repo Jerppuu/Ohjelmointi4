@@ -1,41 +1,25 @@
 const express = require('express');
+const fetch = require("node-fetch");
+const path = require("path");
+const dummy = require("./other/dummy.json");
+
 const app = express();
 const port = 3001;
-const fetch = require("node-fetch");
-const dummy = require("./other/dummy.json");
-const path = require("path");
-/*
-	dummy structure:
-		{
-			"forecast" :
- 						 [
-    						{
-      							"daily": [
-        							{ ... } ,
-        							  ...   ,
-        							{ ... }
-        							]
-							}
-							,
-							{
-      							"hourly": [
-        							{ ... } ,
-        							  ...   ,
-								    { ... }
-        							]
-							}
-						]
-		}
- */
-var token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9wZmEuZm9yZWNhLmNvbVwvYXV0aG9yaXplXC90b2tlbiIsImlhdCI6MTYxOTY5NzA5OSwiZXhwIjoxNjE5NzA0Mjk5LCJuYmYiOjE2MTk2OTcwOTksImp0aSI6IjA4ODdmNzcxODJiMWU4MzIiLCJzdWIiOiJha2tlcGVra2EiLCJmbXQiOiJYRGNPaGpDNDArQUxqbFlUdGpiT2lBPT0ifQ.3l5sIBBFvvoazNhwYumklRK9VhlGhH4rzNtYxu5L_L0";
+var token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9wZmEuZm9yZWNhLmNvbVwvYXV0aG9yaXplXC90b2tlbiIsImlhdCI6MTYyMDAyNDEwNCwiZXhwIjoxNjIwMDY3MzA0LCJuYmYiOjE2MjAwMjQxMDQsImp0aSI6IjZjODNlMTE1YWZkOTQ1MWYiLCJzdWIiOiJha2tlcGVra2EiLCJmbXQiOiJYRGNPaGpDNDArQUxqbFlUdGpiT2lBPT0ifQ.eI8BzZ9rwy73k7S-yrHHDJlXQRcBk9AFDn6sU7goVu8";
 
+app.listen(port, () => {
+	console.log(`Express app listening at http://localhost:${port}`);
+});
+
+app.use(express.static(path.join(__dirname, "../../client", "./build")));
 
 app.get('/api/search/:location', (req, res) => {
 	//res.json(dummy); // uncomment to send dummy.json for dev purposes
 
 	// proper response below in the works, atm uses the id of first hit i gets from locations
-	var responseJSON = {"forecast": []};
+	// TODO: implement better location id implementation and timeout for Foreca servers.
 	try {
+		let responseJSON = {"forecast": []};
 		getLocation(req.params.location, token)
 			.then(async (result) => {
 				let id = result;
@@ -51,8 +35,8 @@ app.get('/api/search/:location', (req, res) => {
 				responseJSON.forecast.push({"daily": daily});
 				responseJSON.forecast.push({"hourly": hourly});
 			}).then(result => {
-			//console.log(JSON.stringify(responseJSON));
-			res.json(responseJSON);
+			//	console.log(JSON.stringify(responseJSON));
+				res.json(responseJSON);
 			});
 	} catch(error) {
 		console.log('error: ', error);
@@ -62,13 +46,7 @@ app.get('/api/search/:location', (req, res) => {
 
 });
 
-app.use(express.static(path.join(__dirname, "../../client", "./build")));
-
-app.listen(port, () => {
-	console.log(`Express app listening at http://localhost:${port}`);
-});
-
-// atm uses the id of first hit i gets from locations
+// atm uses the id of first hit it gets from locations
 async function getLocation(municipality, token) {
 	let requestOptions = {
 		method: 'GET',
