@@ -1,8 +1,8 @@
 # Node Express Server
 
-The server has been configured to run from http://localhost:3001.\
-It will serve a webpage from project root ./client/build/index.html.\
-It can respond to API calls through http://localhost:3001/api/search/:location.\
+The server has been configured to run from http://localhost:3001 . \
+It will serve a webpage from project root ./client/build/index.html \
+It can respond to API calls through http://localhost:3001/api/search/:location . \
 At the moment the location name starts with an uppercase letter.\
 
 ## preinstalled components
@@ -20,6 +20,45 @@ from project root:\
 nodemon ./server/src/index.js\
             or\
 node ./server/src/index.js
+
+## getting data from server to client
+ \
+a couple of ideas to get data from server \
+ \
+FETCH: \
+var requestOptions = { \
+  method: 'GET', \
+  redirect: 'follow' \
+}; \
+fetch("localhost:3001/api/search/Oulu", requestOptions) \
+  .then(response => response.text()) \
+  .then(result => console.log(result)) \
+  .catch(error => console.log('error', error)); \
+\
+JQUERY: \
+var settings = { \
+  "url": "localhost:3001/api/search/Oulu", \
+  "method": "GET", \
+  "timeout": 0, \
+}; \
+\
+$.ajax(settings).done(function (response) { \
+  console.log(response); \
+}); \
+\
+XHR: \
+var xhr = new XMLHttpRequest(); \
+xhr.withCredentials = true; \
+ \
+xhr.addEventListener("readystatechange", function() { \
+  if(this.readyState === 4) { \
+    console.log(this.responseText); \
+  } \
+}); \
+ \
+xhr.open("GET", "localhost:3001/api/search/Oulu"); \
+ \
+xhr.send();
 
 # Getting Started with Create React App
 
