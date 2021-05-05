@@ -12,6 +12,9 @@ app.listen(port, () => {
 	console.log(`Express app listening at http://localhost:${port}`);
 });
 
+// host static images and other content
+app.use(express.static('public'))
+// host static website
 app.use(express.static(path.join(__dirname, "../../client", "./build")));
 
 app.get('/api/search/:location', (req, res) => {
