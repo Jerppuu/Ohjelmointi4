@@ -6,7 +6,7 @@ const dummy = require("./other/dummy.json");
 const app = express();
 const port = 3001;
 
-var token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9wZmEuZm9yZWNhLmNvbVwvYXV0aG9yaXplXC90b2tlbiIsImlhdCI6MTYyMDAyNDEwNCwiZXhwIjoxNjIwMDY3MzA0LCJuYmYiOjE2MjAwMjQxMDQsImp0aSI6IjZjODNlMTE1YWZkOTQ1MWYiLCJzdWIiOiJha2tlcGVra2EiLCJmbXQiOiJYRGNPaGpDNDArQUxqbFlUdGpiT2lBPT0ifQ.eI8BzZ9rwy73k7S-yrHHDJlXQRcBk9AFDn6sU7goVu8";
+var token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9wZmEuZm9yZWNhLmNvbVwvYXV0aG9yaXplXC90b2tlbiIsImlhdCI6MTYyMDE5Njk1OCwiZXhwIjoxNjIwMjQwMTU4LCJuYmYiOjE2MjAxOTY5NTgsImp0aSI6IjUwYzVhMjU3YTNlMWNmOTgiLCJzdWIiOiJha2tlcGVra2EiLCJmbXQiOiJYRGNPaGpDNDArQUxqbFlUdGpiT2lBPT0ifQ.qsNS9gko_sIkm63hm85JMrT0O8QuzBCTERuHsn-BneQ";
 
 app.listen(port, () => {
 	console.log(`Express app listening at http://localhost:${port}`);
