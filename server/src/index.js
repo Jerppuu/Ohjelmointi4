@@ -13,7 +13,7 @@ app.listen(port, () => {
 });
 
 // host static images and other content
-app.use(express.static('public'))
+app.use(express.static(path.join(__dirname,'public')));
 // host static website
 app.use(express.static(path.join(__dirname, "../../client", "./build")));
 
