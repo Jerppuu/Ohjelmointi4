@@ -1,4 +1,13 @@
 import React, {useRef} from "react";
+import Parser from 'html-react-parser';
+
+import kunnat from "./other/kunnat"
+
+let options = '';
+for (let i = 0; i < kunnat.length; i++) {
+	options += '<option value="' + kunnat[i] + '"/>\n';
+}
+
 function Search() {
 
 	const inputCity = useRef();
@@ -14,9 +23,7 @@ function Search() {
 		<div>
 			<input ref={inputCity} list={"paikkakunta-lista"} id={"valitse-paikkakunta"} type="text"/>
 			<datalist id={"paikkakunta-lista"}>
-				<option value={"kuusamo"}/>
-				<option value={"oulu"}/>
-				<option value={"helsinki"}/>
+				{Parser(options)}
 			</datalist>
 			<button onClick={handleSearch}>Hae</button>
 		</div>
