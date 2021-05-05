@@ -22,9 +22,10 @@ class App extends React.Component {
         this.state = {
             check : false,
             dayName : null,
-            daily : null,
-            hourly : null
+            daily : "dailystate",
+            hourly : "hourlystate"
         }
+        this.getForecast("Oulu")
     }
 /*
     shouldComponentUpdate() {}
@@ -71,7 +72,7 @@ class App extends React.Component {
         //setDaily(daily_var);
         this.setState({hourly: hourly_var})
         //setHourly(hourly_var);
-
+        console.log(this.state.daily);
     }
 
     parseForecast(forecastJSON){
