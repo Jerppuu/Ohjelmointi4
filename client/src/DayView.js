@@ -6,14 +6,16 @@ function DayView(props) {
 
     function minusDay (){
         if(props.day > 1) {
-            props.setDay(props.day - 1);
+            props.dayNameHandler(props.day -1);
+            //props.setDay(props.day - 1);
         }
     }
 
 
     function plusDay (){
         if (props.day < 6) {
-            props.setDay(props.day + 1);
+            props.dayNameHandler(props.day +1);
+            //props.setDay(props.day + 1);
         }
     }
 

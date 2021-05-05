@@ -18,8 +18,8 @@ app.use(express.static('public'))
 app.use(express.static(path.join(__dirname, "../../client", "./build")));
 
 app.get('/api/search/:location', (req, res) => {
-	//res.json(dummy); // uncomment to send dummy.json for dev purposes
-
+	res.json(dummy); // uncomment to send dummy.json for dev purposes
+	/*
 	// proper response below in the works, atm uses the id of first hit i gets from locations
 	// TODO: implement better location id implementation and timeout for Foreca servers.
 	try {
@@ -47,7 +47,7 @@ app.get('/api/search/:location', (req, res) => {
 		res.code(400).end();
 
 	}
-
+	*/
 });
 
 // atm uses the id of first hit it gets from locations

@@ -8,6 +8,7 @@ let dummy = JSON.parse(fs.readFileSync(path, 'utf8'));
 //hours.forEach(hour => console.log(hour));//JSON.stringify(day)));
 console.log(days[0].date);						// 2021-05-03
 console.log(new Date(days[0].date).getDay());	// tulostaa 1, koska 5.3 oli maanantai, ti = 2,...,la = 6,su = 0
+console.log((2/3).toFixed(1));
 
 function parseForecast(forecastJSON){
 	let daysArr = [], hoursArr = [];
