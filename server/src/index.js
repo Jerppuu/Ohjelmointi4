@@ -6,7 +6,7 @@ const dummy = require("./other/dummy.json");
 const app = express();
 const port = 3001;
 
-var token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9wZmEuZm9yZWNhLmNvbVwvYXV0aG9yaXplXC90b2tlbiIsImlhdCI6MTYyMDE5Njk1OCwiZXhwIjoxNjIwMjQwMTU4LCJuYmYiOjE2MjAxOTY5NTgsImp0aSI6IjUwYzVhMjU3YTNlMWNmOTgiLCJzdWIiOiJha2tlcGVra2EiLCJmbXQiOiJYRGNPaGpDNDArQUxqbFlUdGpiT2lBPT0ifQ.qsNS9gko_sIkm63hm85JMrT0O8QuzBCTERuHsn-BneQ";
+var token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9wZmEuZm9yZWNhLmNvbVwvYXV0aG9yaXplXC90b2tlbiIsImlhdCI6MTYyMDI4NzU3MCwiZXhwIjoxNjIwMzMwNzcwLCJuYmYiOjE2MjAyODc1NzAsImp0aSI6ImI4ZmRjMDE0M2JmZDA0OGYiLCJzdWIiOiJha2tlcGVra2EiLCJmbXQiOiJYRGNPaGpDNDArQUxqbFlUdGpiT2lBPT0ifQ.eccqw6d1dgK-6-hbo8GrGQ9lLqU_8XUW1CwnGYLFTOY";
 
 app.listen(port, () => {
 	console.log(`Express app listening at http://localhost:${port}`);
@@ -19,7 +19,7 @@ app.use(express.static(path.join(__dirname, "../../client", "./build")));
 
 app.get('/api/search/:location', (req, res) => {
 	res.json(dummy); // uncomment to send dummy.json for dev purposes
-	/*
+	return;
 	// proper response below in the works, atm uses the id of first hit i gets from locations
 	// TODO: implement better location id implementation and timeout for Foreca servers.
 	try {
@@ -47,7 +47,6 @@ app.get('/api/search/:location', (req, res) => {
 		res.code(400).end();
 
 	}
-	*/
 });
 
 // atm uses the id of first hit it gets from locations
