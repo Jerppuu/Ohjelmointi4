@@ -38,7 +38,7 @@ class ForecastView extends Component {
 		let dateNum = new Date(date).getDay();
 		return names[dateNum];
 	}
-	async createDays(start,end){
+	createDays(start,end){
 		let content = [];
 		for (let j=start;j<(end+1);j++){
 			console.log(this.state.daily[j]);

@@ -12,7 +12,7 @@ async function getForecast(cityName_var){
         redirect: 'follow'
     };
 
-    let promise = fetch("http://localhost:3001/api/search/" + cityName_var, requestOptions)
+    let promise = fetch("http://localhost:3002/api/search/" + cityName_var, requestOptions)
         .then(response => response.json())
         .catch(error => console.log('error', error));
     let response = await promise;
@@ -60,10 +60,12 @@ class App extends React.Component {
 		getSnapshotBeforeUpdate() {}
 
 		componentWillUnmount() {}
-	*/
-    componentDidUpdate() {
+
+	     componentDidUpdate() {
 
     }
+	*/
+
 
     componentDidMount(){
         getForecast("Oulu");

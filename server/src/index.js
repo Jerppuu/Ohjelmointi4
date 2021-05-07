@@ -4,7 +4,7 @@ const path = require("path");
 const dummy = require("./other/dummy.json");
 
 const app = express();
-const port = 3001;
+const port = 3002;
 
 var token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9wZmEuZm9yZWNhLmNvbVwvYXV0aG9yaXplXC90b2tlbiIsImlhdCI6MTYyMDI4NzU3MCwiZXhwIjoxNjIwMzMwNzcwLCJuYmYiOjE2MjAyODc1NzAsImp0aSI6ImI4ZmRjMDE0M2JmZDA0OGYiLCJzdWIiOiJha2tlcGVra2EiLCJmbXQiOiJYRGNPaGpDNDArQUxqbFlUdGpiT2lBPT0ifQ.eccqw6d1dgK-6-hbo8GrGQ9lLqU_8XUW1CwnGYLFTOY";
 
