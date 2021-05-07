@@ -22,7 +22,6 @@ async function getForecast(cityName_var){
 
 function parseForecast(forecastJSON){
     let daysArr = [], hoursArr = [];
-
     forecastJSON.forecast[0].daily.forEach(day => {
         daysArr.push(day);
     });
@@ -35,32 +34,19 @@ function parseForecast(forecastJSON){
 class App extends Component {
 
     constructor (props) {
+
         super(props);
         this.state = {
-            daily : "dailystateisretared",
-            hourly : "hourlystateisretared"
+            daily : null,
+            hourly : null
         };
         getForecast = getForecast.bind(this);
+
+    }
+
+    componentDidMount() {
         getForecast("Oulu");
     }
-    // kun sivusto latautuu
-
-
-    /*
-
-
-
-
-		static getDerivedStateFromProps() {}
-
-		getSnapshotBeforeUpdate() {}
-
-		componentWillUnmount() {}
-
-
-	*/
-
-    //shouldComponentUpdate() { this.render() }
 
     render() {
         return (<div>
@@ -70,10 +56,12 @@ class App extends Component {
             </div>
 
             <div className="mainBody">
-                <div className="leftSide">
-                    <TodayPreview daily = {this.state.daily[0]} />
-                    <ForecastView daily = {this.state.daily} hourly = {this.state.hourly} />
-                </div>
+                {(this.state.daily === null)?
+                    <div className="leftSide"/>:
+                    <div className="leftSide">
+                        <TodayPreview daily = {this.state.daily[0]}/>
+                        <ForecastView daily = {this.state.daily} hourly = {this.state.hourly} />
+                    </div>}
                 <Map/>
             </div>
 
