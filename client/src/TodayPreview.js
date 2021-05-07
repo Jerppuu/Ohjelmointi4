@@ -16,9 +16,9 @@ function TodayPreview(props) {
 		"Su", "Ma", "Ti", "Ke", "To", "Pe", "La"
 	];
 	let path = "http://localhost:3002/imgs/";
-	let weekday = weekdays[new Date(props.daily[0].date).getDay()]; // results in day abbr.
-	let imglink = path + props.daily[0].symbol + ".png";
-	let tempAvg = ((props.daily[0].maxTemp + props.daily[0].minTemp) / 2).toFixed(0);
+	let weekday = weekdays[new Date(props.daily.date).getDay()]; // results in day abbr.
+	let imglink = path + props.daily.symbol + ".png";
+	let tempAvg = ((props.daily.maxTemp + props.daily.minTemp) / 2).toFixed(0);
 
 	return (
 		<div>

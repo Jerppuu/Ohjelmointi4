@@ -1,94 +1,73 @@
-import React, {Component} from "react";
+import React, {Component, useState} from "react";
 
 
-class ForecastView extends Component {
-	constructor(props) {
-		super(props);
-		this.state = {
-			switchMainView : false,
-			switchWeekView : false,
-			DayNum : 0,
-			daily : props.forecast.daily,
-			hourly : props.forecast.hourly
-		};
-	}
+function ForecastView(props) {
 
-	getDayName(date) {
+	const [switchMainView, setSwitchMainView] = useState(false);
+	const [switchWeekView, setSwitchWeekView] = useState(false);
+	const [dayNum, setDayNum] = useState(0);
+	let daily = props.daily;
+	let hourly = props.hourly;
+	//const [daily, setDaily] = useState(props.daily);
+	//const [hourly, setHourly] = useState(props.hourly);
+
+	function getDayName(date) {
 
 		let names = [
 			"Su","Ma","Ti","Ke","To","Pe","La"
 		];
-		let dateNum = new Date(date).getDay();
-		return names[dateNum];
+		let var_date = new Date(date);
+		let dateName = names[var_date.getDay()];
+		let dayNum = var_date.getDate();
+		let monthNum = var_date.getMonth()+1;
+		return dateName+" "+dayNum+"."+monthNum;
 	}
-	createDays(start,end){
+
+	function getDayForecast(day) {
+		let path = "http://localhost:3002/imgs/";
+		let imglink = path + day.symbol + ".png";
+		let tempAvg = ((day.maxTemp + day.minTemp) / 2).toFixed(0);
+		return <div><img src={imglink} alt="dayweather" height={"50px"}/>{tempAvg}</div>
+	}
+
+	function createDays(start,end,disabled){
 		let content = [];
 		for (let j=start;j<(end+1);j++){
-			console.log(this.state.daily[j]);
 			content.push(<button onClick={() => {
-				this.setState({switchMainView : !this.state.switchMainView}); this.setState({DayNum:j});
-				}} className="day">{this.getDayName(this.state.daily[j].date)}  </button>
+				setSwitchMainView(!switchMainView);setDayNum(j)
+				}} className="day" disabled={disabled}>{getDayName(daily[j].date)} {getDayForecast(daily[j])}</button>
 				);
 		}
 		return content;
 	}
 
-
-/*
-	shouldComponentUpdate() {}
-
-	componentDidUpdate() {}
-
-	static getDerivedStateFromProps() {}
-
-	getSnapshotBeforeUpdate() {}
-
-	componentWillUnmount() {}
-*/
-	// kun sivusto latautuu
-
-	componentDidMount(){
-		//getForecast("Helsinki")
-	}
 	// createDays for testing purposes for now
-	renderWeekView(){
-		return (
+	return (
 			<div>
-				<div className={this.state.switchMainView? "hidden" : ""}>
-					<div className={this.state.switchWeekView? "hidden" : ""}>
+				<div className={switchMainView? "hidden" : ""}>
+					<div className={switchWeekView? "hidden" : ""}>
 						<div className="weekdays">
-							{this.createDays(0,6)}
+							{createDays(0,6,false)}
 						</div>
 					</div>
-					<div className={this.state.switchWeekView? "" : "hidden"}>
+					<div className={switchWeekView? "" : "hidden"}>
 						<div className="weekdays">
-							<button className="day" disabled={true}>Ma-</button>
-							<button className="day" disabled={true}>Ti-</button>
-							<button className="day" disabled={true}>Ke-</button>
-							<button className="day" disabled={true}>To-</button>
-							<button className="day" disabled={true}>Pe-</button>
-							<button className="day" disabled={true}>La-</button>
-							<button className="day" disabled={true}>Su-</button>
+							{createDays(7,13,true)}
 						</div>
 					</div>
 
-					<button onClick={() => this.setState({switchWeekView : !this.state.switchWeekView})} className="navButton" disabled={!this.state.switchWeekView}>Edellinen</button>
-					<div>{this.switchWeekView? "Seuraava" : "Nykyinen"}</div>
-					<button onClick={() => this.setState({switchWeekView : !this.state.switchWeekView})} className="navButton" disabled={this.state.switchWeekView}>Seuraava</button>
+					<button onClick={() =>{setSwitchWeekView(!switchWeekView)}} className="navButton" disabled={!switchWeekView}>Edellinen</button>
+					<div>{switchWeekView? "Seuraava" : "Nykyinen"}</div>
+					<button onClick={() =>{setSwitchWeekView(!switchWeekView)}} className="navButton" disabled={switchWeekView}>Seuraava</button>
 				</div>
-				<div className={this.state.switchMainView? "" : "hidden"}>
-					<p> HELLO! DAY - {this.state.DayNum} - VIEW{this.state.daily[this.dayNum]}</p>
-					<button onClick={()=>this.setState({switchMainView : !this.state.switchMainView})} className="navButton" >Takaisin</button>
-					<button onClick={() => this.setState({DayNum : this.state.DayNum -1})} className="navButton" disabled={this.state.DayNum === 0}>Edellinen</button>
-					<button onClick={() => this.setState({DayNum : this.state.DayNum +1})} className="navButton" disabled={this.state.DayNum === 6}>Seuraava</button>
+				<div className={switchMainView? "" : "hidden"}>
+					<p> HELLO! DAY - {dayNum} - VIEW</p>
+					<button onClick={()=>{setSwitchMainView(!switchMainView)}} className="navButton" >Takaisin</button>
+					<button onClick={()=>{setDayNum(dayNum -1)}} className="navButton" disabled={dayNum === 0}>Edellinen</button>
+					<button onClick={()=>{setDayNum(dayNum +1)}}  className="navButton" disabled={dayNum === 6}>Seuraava</button>
 				</div>
 			</div>
-		)
-	}
-
-
-
-	render() { return this.renderWeekView();}
+		);
 }
 
 export default ForecastView;

@@ -37,17 +37,18 @@ class App extends Component {
     constructor (props) {
         super(props);
         this.state = {
-            daily : "dailystate",
-            hourly : "hourlystate"
+            daily : "dailystateisretared",
+            hourly : "hourlystateisretared"
         };
         getForecast = getForecast.bind(this);
+        getForecast("Oulu");
     }
     // kun sivusto latautuu
 
 
     /*
 
-		shouldComponentUpdate() {}
+
 
 
 		static getDerivedStateFromProps() {}
@@ -58,13 +59,8 @@ class App extends Component {
 
 
 	*/
-    componentDidUpdate() {
-        this.render()
-    }
 
-    componentDidMount(){
-        getForecast("Oulu");
-    }
+    //shouldComponentUpdate() { this.render() }
 
     render() {
         return (<div>
@@ -75,8 +71,8 @@ class App extends Component {
 
             <div className="mainBody">
                 <div className="leftSide">
-                    <TodayPreview daily = {this.state.daily} />
-                    <ForecastView forecast = {this.state} />
+                    <TodayPreview daily = {this.state.daily[0]} />
+                    <ForecastView daily = {this.state.daily} hourly = {this.state.hourly} />
                 </div>
                 <Map/>
             </div>
