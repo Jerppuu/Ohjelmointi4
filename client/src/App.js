@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, {Component} from 'react';
 import Logo from "./Logo";
 import Search from "./Search";
 import Map from "./Map";
@@ -6,23 +6,18 @@ import TodayPreview from "./TodayPreview";
 import ForecastView from "./ForecastView";
 
 async function getForecast(cityName_var){
-
     var requestOptions = {
         method: 'GET',
         redirect: 'follow'
     };
-
-    let promise = fetch("http://localhost:3002/api/search/" + cityName_var, requestOptions)
+    fetch("http://localhost:3002/api/search/" + cityName_var, requestOptions)
         .then(response => response.json())
+        .then(result => parseForecast(result))
+        .then(result => {
+            this.setState({daily: result[0]});
+            this.setState({hourly: result[1]});
+        })
         .catch(error => console.log('error', error));
-    let response = await promise;
-    //console.log(JSON.stringify(response));
-    let daily_var = [], hourly_var = [];
-    [daily_var, hourly_var] = parseForecast(response);
-    this.setState({daily: daily_var})
-    //setDaily(daily_var);
-    this.setState({hourly: hourly_var})
-    //setHourly(hourly_var);
 }
 
 function parseForecast(forecastJSON){
@@ -37,12 +32,12 @@ function parseForecast(forecastJSON){
     return [daysArr,hoursArr];
 }
 
-class App extends React.Component {
+class App extends Component {
 
     constructor (props) {
         super(props);
         this.state = {
-            daily : "dailyst",
+            daily : "dailystate",
             hourly : "hourlystate"
         };
         getForecast = getForecast.bind(this);
@@ -61,11 +56,11 @@ class App extends React.Component {
 
 		componentWillUnmount() {}
 
-	     componentDidUpdate() {
 
-    }
 	*/
-
+    componentDidUpdate() {
+        this.render()
+    }
 
     componentDidMount(){
         getForecast("Oulu");
@@ -80,8 +75,8 @@ class App extends React.Component {
 
             <div className="mainBody">
                 <div className="leftSide">
-                    <TodayPreview daily = {this.state.daily}/>
-                    <ForecastView forecast = {this.state}/>
+                    <TodayPreview daily = {this.state.daily} />
+                    <ForecastView forecast = {this.state} />
                 </div>
                 <Map/>
             </div>

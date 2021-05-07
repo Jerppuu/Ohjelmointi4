@@ -2,6 +2,7 @@ const express = require('express');
 const fetch = require("node-fetch");
 const path = require("path");
 const dummy = require("./other/dummy.json");
+const cors = require('cors');
 
 const app = express();
 const port = 3002;
@@ -12,6 +13,7 @@ app.listen(port, () => {
 	console.log(`Express app listening at http://localhost:${port}`);
 });
 
+app.use(cors());
 // host static images and other content
 app.use(express.static(path.join(__dirname,'public')));
 // host static website
@@ -40,6 +42,7 @@ app.get('/api/search/:location', (req, res) => {
 				responseJSON.forecast.push({"hourly": hourly});
 			}).then(result => {
 			//	console.log(JSON.stringify(responseJSON));
+				res.he
 				res.json(responseJSON);
 			});
 	} catch(error) {
