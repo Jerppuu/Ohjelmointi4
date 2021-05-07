@@ -3,24 +3,7 @@ import Logo from "./Logo";
 import Search from "./Search";
 import Map from "./Map";
 import TodayPreview from "./TodayPreview";
-import WeekView from "./WeekView";
-import DayView from "./DayView";
-
-function viewStateHandlerWeek(dayName_var) {
-    this.setState({check: !this.state.check})
-    //setCheck(prevCheck => !prevCheck);
-    this.setState({dayname: dayName_var})
-    //setDay(dayName_var);
-}
-
-function viewStateHandlerDay () {
-    this.setState({check: !this.state.check})
-    //setCheck(prevCheck => !prevCheck);
-}
-
-function dayNameHandler (dayName_var){
-    this.setState({dayName: dayName_var});
-}
+import ForecastView from "./ForecastView";
 
 async function getForecast(cityName_var){
 
@@ -40,7 +23,6 @@ async function getForecast(cityName_var){
     //setDaily(daily_var);
     this.setState({hourly: hourly_var})
     //setHourly(hourly_var);
-    console.log(this.state.daily);
 }
 
 function parseForecast(forecastJSON){
@@ -57,45 +39,34 @@ function parseForecast(forecastJSON){
 
 class App extends React.Component {
 
-
-    //const [check, setCheck] = useState(false);
-    //const [dayName, setDay] = useState(0);
-    //const [daily, setDaily] = useState();
-    //const [hourly, setHourly] = useState();
-
-
     constructor (props) {
         super(props);
         this.state = {
-            check : false,
-            dayName : null,
-            daily : "dailystate",
+            daily : "dailyst",
             hourly : "hourlystate"
-        }
-
-        viewStateHandlerWeek = viewStateHandlerWeek.bind(this);
-        viewStateHandlerDay = viewStateHandlerDay.bind(this);
-        dayNameHandler = dayNameHandler.bind(this);
+        };
         getForecast = getForecast.bind(this);
-
-        getForecast("Oulu")
     }
-/*
-    shouldComponentUpdate() {}
-
-    componentDidUpdate() {}
-
-    static getDerivedStateFromProps() {}
-
-    getSnapshotBeforeUpdate() {}
-
-    componentWillUnmount() {}
-*/
-
-
     // kun sivusto latautuu
+
+
+    /*
+
+		shouldComponentUpdate() {}
+
+
+		static getDerivedStateFromProps() {}
+
+		getSnapshotBeforeUpdate() {}
+
+		componentWillUnmount() {}
+	*/
+    componentDidUpdate() {
+
+    }
+
     componentDidMount(){
-        getForecast("Helsinki")
+        getForecast("Oulu");
     }
 
     render() {
@@ -107,16 +78,8 @@ class App extends React.Component {
 
             <div className="mainBody">
                 <div className="leftSide">
-
                     <TodayPreview daily = {this.state.daily}/>
-
-                    <div className={this.state.check? "hidden" : ""}>
-                        <WeekView  buttonPress = {viewStateHandlerWeek}/>
-                    </div>
-                    <div className={this.state.check? "" : "hidden"}>
-                        <DayView buttonPress={viewStateHandlerDay}  day= {this.state.dayName} dayNameHandler ={this.dayNameHandler} />
-                    </div>
-
+                    <ForecastView forecast = {this.state}/>
                 </div>
                 <Map/>
             </div>

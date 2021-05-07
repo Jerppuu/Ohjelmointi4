@@ -1,7 +1,6 @@
 import React, {useRef} from "react";
 import Parser from 'html-react-parser';
 import kunnat from "./other/kunnat";
-import getForecast from "./App";
 
 let options = '';
 for (let i = 0; i < kunnat.length; i++) {
