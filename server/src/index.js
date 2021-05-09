@@ -62,7 +62,7 @@ app.get(apiMap, (req,res) => {
 	}
 
 	const loop = async () => {
-		asyncForEach(mapMunicipalities, async (municipality) => {
+		await asyncForEach(mapMunicipalities, async (municipality) => {
 			await getLocation(municipality, token)
 				.then(result => {
 					switch (result) {
@@ -88,7 +88,8 @@ app.get(apiMap, (req,res) => {
 								}).catch(error => errorCatch(error,apiMap));
 					}
 				}).catch(error => errorCatch(error,apiMap));
-		}).then(res.json(responseJSON).end);
+		});
+		res.json(responseJSON);
 	}
 	loop();
 });
