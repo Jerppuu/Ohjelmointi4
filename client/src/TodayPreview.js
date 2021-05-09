@@ -1,5 +1,7 @@
 import React from 'react';
 
+const imgURL = "http://localhost:3002/imgs/";
+
 function TodayPreview(props) {
 
 	// {
@@ -15,13 +17,13 @@ function TodayPreview(props) {
 	let weekdays = [
 		"Su", "Ma", "Ti", "Ke", "To", "Pe", "La"
 	];
-	let path = "http://localhost:3002/imgs/";
 	let weekday = weekdays[new Date(props.daily.date).getDay()]; // results in day abbr.
-	let imglink = path + props.daily.symbol + ".png";
+	let imglink = imgURL + props.daily.symbol + ".png";
 	let tempAvg = ((props.daily.maxTemp + props.daily.minTemp) / 2).toFixed(0);
 
 	return (
 		<div>
+			<p style={{fontSize: "15pt", margin: "1em"}}>{props.municipality} tänään</p>
 			<div style={{height: "100px",backgroundColor: "#aaa"}}>
 				{weekday}
 				<img src={imglink} alt="weather" height={"100px"}/>

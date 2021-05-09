@@ -5,17 +5,33 @@ import Map from "./Map";
 import TodayPreview from "./TodayPreview";
 import ForecastView from "./ForecastView";
 
+const serverPort = ":3002";
+const serverAddr = "http://localhost"
+const api = "/api/search/";
+
+// TODO: Implement search errors so that user is informed
 async function getForecast(cityName_var){
     var requestOptions = {
         method: 'GET',
         redirect: 'follow'
     };
-    fetch("http://localhost:3002/api/search/" + cityName_var, requestOptions)
-        .then(response => response.json())
+    fetch(serverAddr + serverPort + api + cityName_var, requestOptions)
+        .then(response => {
+            switch (response.status) {
+                case 200:
+                    return response.json();
+                case 404:
+                    throw "not found";
+                case 400:
+                    throw "server err";
+                default:
+                    throw "server err";
+            }})
         .then(result => parseForecast(result))
         .then(result => {
             this.setState({daily: result[0]});
             this.setState({hourly: result[1]});
+            this.setState({municipality: cityName_var});
         })
         .catch(error => console.log('error', error));
 }
@@ -33,21 +49,20 @@ function parseForecast(forecastJSON){
 
 class App extends Component {
 
-    constructor (props) {
-
-        super(props);
+    constructor () {
+        super();
         this.state = {
             daily : null,
-            hourly : null
+            hourly : null,
+            municipality : "Oulu"
         };
         getForecast = getForecast.bind(this);
-
     }
 
     componentDidMount() {
-        getForecast("Oulu");
+        getForecast(this.state.municipality);
     }
-
+    //  TODO: implement bottom links
     render() {
         return (<div>
             <div className="header">
@@ -59,22 +74,21 @@ class App extends Component {
                 {(this.state.daily === null)?
                     <div className="leftSide"/>:
                     <div className="leftSide">
-                        <TodayPreview daily = {this.state.daily[0]}/>
+                        <TodayPreview daily = {this.state.daily[0]} municipality = {this.state.municipality}/>
                         <ForecastView daily = {this.state.daily} hourly = {this.state.hourly} />
                     </div>}
                 <Map/>
             </div>
-
             <nav className="navbar navbar-expand-sm bg-primary navbar-dark" style={{position: "fixed",bottom: 0, width: "100%", height: "30px"}}>
                 <ul className="navbar-nav">
                     <li className="nav-item">
-                        <a className="nav-link" href="#">Meistä</a>
+                        <a className="nav-link" href="#notready">Meistä</a>
                     </li>
                     <li className="nav-item">
-                        <a className="nav-link" href="#">Ohjeet</a>
+                        <a className="nav-link" href="#notready">Ohjeet</a>
                     </li>
                     <li className="nav-item">
-                        <a className="nav-link" href="#">Sivustokartta</a>
+                        <a className="nav-link" href="#notready">Sivustokartta</a>
                     </li>
                 </ul>
             </nav>

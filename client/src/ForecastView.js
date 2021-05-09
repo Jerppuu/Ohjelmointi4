@@ -35,15 +35,18 @@ function ForecastView(props) {
 		let path = "http://localhost:3002/imgs/";
 		let imglink = path + day.symbol + ".png";
 		let tempAvg = ((day.maxTemp + day.minTemp) / 2).toFixed(0);
-		return <div><img src={imglink} alt="dayweather" height={"50px"}/>{tempAvg}°C</div>
+		return <div>{getDayName(day.date)} <img src={imglink} alt="dayweather" height={"50px"}/>{tempAvg}°C</div>
 	}
 	function createDays(start,end,disabled) {
 		let content = [];
 		for (let j = start-1; j < (end); j++) {
 			let item;
-			!disabled? item = <button onClick={() => {setSwitchMainView(!switchMainView);setDayNum(j);setHourNum(24*j)}}
-							  className="day">{getDayName(daily[j].date)} {getDayForecast(daily[j])}</button> :
-						item = <button className="day">{getDayName(daily[j].date)} {getDayForecast(daily[j])}</button>;
+			!disabled? 	item = 	<button className="day" onClick={() => {setSwitchMainView(!switchMainView);setDayNum(j);setHourNum(24*j)}} >
+									{getDayForecast(daily[j])}
+								</button> :
+						item = 	<button className="day">
+									{getDayForecast(daily[j])}
+								</button>;
 			content.push(item);
 		}
 		return content;
@@ -61,17 +64,21 @@ function ForecastView(props) {
 		"precipAccum": 0
 	}*/
 	function getHourForecast(hour) {
-		console.log(hour);
 		let path_var = "http://localhost:3002/imgs/";
 		let imglink_var = path_var + hour.symbol + ".png";
 		let hour_var = new Date(hour.time).getHours();
-		return <div><img src={imglink_var} alt="hourweather" height={"50px"}/>{hour.temperature}°C {hour_var}:00 {getDayName(hour.time)}</div>
+		return 	<div>
+					{getDayName(hour.time)} {hour_var}:00
+					<img src={imglink_var} alt="hourweather" height={"50px"}/>
+					{hour.temperature}°C
+				</div>
 	}
 	function createHours(start,end) {
 		let content = [];
 		for (let j = start; j < (end + 1); j=j+2) {
-			console.log(hourly)
-			content.push(<button className="hour">{getHourForecast(hourly[j])}</button>
+			content.push(	<button className="hour">
+								{getHourForecast(hourly[j])}
+							</button>
 			);
 		}
 		return content;
@@ -88,18 +95,21 @@ function ForecastView(props) {
 							{createDays(1,7,false)}
 						</div>
 					</div>
-					<div className={switchWeekView? "" : "hidden"}>
-						<div className="weekdays">
-							{createDays(8,maxDays,true)}
-						</div>
-					</div>
 
-					<button onClick={() =>{setSwitchWeekView(!switchWeekView)}} className="navButton" disabled={!switchWeekView}>Edellinen</button>
-					<div>{switchWeekView? "Seuraava" : "Nykyinen"}</div>
-					<button onClick={() =>{setSwitchWeekView(!switchWeekView)}} className="navButton" disabled={switchWeekView}>Seuraava</button>
+						<div className={switchWeekView? "" : "hidden"}>
+							<div className="weekdays">
+								{createDays(8,maxDays,true)}
+							</div>
+						</div>
+
+					<div className={"nav"}>
+						<button onClick={() =>{setSwitchWeekView(!switchWeekView)}} className="navButton" disabled={!switchWeekView}>Edellinen</button>
+						<div>{switchWeekView? "Seuraava" : "Nykyinen"}</div>
+						<button onClick={() =>{setSwitchWeekView(!switchWeekView)}} className="navButton" disabled={switchWeekView}>Seuraava</button>
+					</div>
 				</div>
 				<div className={switchMainView? "" : "hidden"}>
-					<div className="weekhours">
+					<div className="dayhours">
 						{createHours(hourNum,hourNum+23)}
 					</div>
 					<div className="nav">
