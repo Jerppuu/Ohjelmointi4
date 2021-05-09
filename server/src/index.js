@@ -6,7 +6,7 @@ const cors = require('cors');
 
 const app = express();
 const port = 3002;
-const mapMunicipalities = ["Sodankylä","Oulu","Kuopio","Tampere"];
+const mapMunicipalities = ["Pelkosenniemi","Oulu","Kuopio","Tampere"];
 
 const apiLocation = '/api/search/:location';
 const apiMap = '/api/map';
@@ -25,14 +25,13 @@ app.use(cors());
 // host static images and other content
 app.use(express.static(path.join(__dirname,'public')));
 // host static website
-app.use(express.static(path.join(__dirname, "../../client", "./build")));
+app.use(express.static(path.join(__dirname, "../../client/build")));
 
 app.get(apiLocation, (req, res) => {
 	//res.json(dummy); // uncomment to send dummy.json for dev purposes
 	//return;
 	// proper response below in the works, atm uses the id of first hit i gets from locations
 	// TODO: implement better location id implementation and timeout for Foreca servers.
-	try {
 		getLocation(req.params.location, token)
 			.then(async (result) => {
 				let responseJSON = {"forecast": []};
@@ -42,62 +41,52 @@ app.get(apiLocation, (req, res) => {
 					case 1:
 						throw 1;
 					default:
-						console.log("result:" ,result);
 						responseJSON.forecast.push({"daily": await getDaily(result, token)});
 						responseJSON.forecast.push({"hourly": await getHourly(result, token)});
 						return responseJSON;
 				}
 			})
 			.then(responseJSON => {res.json(responseJSON);})
-			.catch(error => console.log("error:", error))
-	} catch (error) {
-		console.log('error: ', error);
-		switch (error) {
-			case 0:
-				res.code(400).end;
-				return;
-			case 1:
-				res.code(404).end;
-				return;
-		}
-	}
+			.catch(error => {
+				errorCatch(error,apiLocation);
+	});
 });
-// TODO: test if this works
-app.get(apiMap), (req,res) => {
+// TODO: solve responseJSON scope problem. Loop pushes data correctly, but function returns blank json.
+app.get(apiMap, (req,res) => {
 	let responseJSON = {"map":[]};
-	try {
-		mapMunicipalities.forEach(municipality => {
-			getLocation(municipality, token)
-				.then(async (result) => {
-					switch (result) {
-						case 1:
-							res.code(404).end;
-							return;
-						case 0:
-							res.code(400).end;
-							return;
-					}
-					getDaily(result,token)
-						.then(response => {
-							result.map.push({municipality: {"symbol":response.forecast[0].symbol,
-															"minTemp":response.forecast[0].minTemp,
-															"maxTemp":response.forecast[0].maxTemp,
-															"precipAccum": response.forecast[0].precipAccum,
-															"precipProb": response.forecast[0].precipProb,
-															"maxWindSpeed": response.forecast[0].maxWindSpeed,
-															"windDir": response.forecast[0].windDir
-															}})
-						})
-					})
-				})
-		res.json(responseJSON);
-	} catch(error) {
-		console.log('error', error)
-		res.code(400).end();
-	}
-}
+	mapMunicipalities.forEach(municipality => {
+		getLocation(municipality, token)
+			.then(result => {
+				switch (result) {
+					case 0:
+						throw 0;
+					case 1:
+						throw 1;
+					default:
+						 getDaily(result, token)
+							.then(response => {
+								responseJSON.map.push({
+										"location" : municipality,
+										"symbol": response[0].symbol,
+										"minTemp": response[0].minTemp,
+										"maxTemp": response[0].maxTemp,
+										"precipAccum": response[0].precipAccum,
+										"precipProb": response[0].precipProb,
+										"maxWindSpeed": response[0].maxWindSpeed,
+										"windDir": response[0].windDir
+									});
+							}).catch(error => errorCatch(error,apiMap));
+				}
+			}).catch(error => {
+				errorCatch(error,apiMap);
+			})
+	});
+	console.log(responseJSON);
+	res.json(responseJSON);
+});
 
 // atm uses the id of first hit it gets from locations
+//TODO: Solve problem with ÄÖÅ. Returns Otherwise incorrectly notfound. Fetch supports utf-8 as def.
 async function getLocation(municipality, token) {
 	let requestOptions = {
 		method: 'GET',
@@ -118,7 +107,7 @@ async function getLocation(municipality, token) {
 			});
 			return result;
 		}).catch(error => {
-			console.log('error: ', error);
+			errorCatch(error,getLocation.name);
 			return 0;
 		});
 }
@@ -133,12 +122,9 @@ async function getDaily(id, token) {
 	};
 	// if you need more detailed dataset use argument: ?dataset=full
 	return fetch( ForecaAddr + ForecaApiForecastDaily + id +"?periods=15", requestOptions)
-		.then(async result => {
-			let promise = result.json();
-			let data = await promise;
-			return data.forecast;
-		})
-		.catch(error => console.log('error', error));
+		.then(result => result.json())
+		.then(result => result.forecast)
+		.catch(error => errorCatch(error,getDaily.name));
 }
 
 async function getHourly(id, token) {
@@ -150,12 +136,23 @@ async function getHourly(id, token) {
 		},
 		redirect: 'follow'
 	};
-
 	return fetch(ForecaAddr + ForecaApiForecastHourly + id +"?periods=169", requestOptions)
-		.then(async result => {
-			let promise = result.json();
-			let data = await promise;
-			return data.forecast;
-		})
-		.catch(error => console.log('error', error));
+		.then(result => result.json())
+		.then(result => result.forecast)
+		.catch(error => errorCatch(error,getHourly.name));
+}
+
+function errorCatch(error, context){
+	switch (error) {
+	case 0:
+		res.sendStatus(400).end;
+		console.log("Foreca Server error (",context,"):", error);
+		return;
+	case 1:
+		res.sendStatus(404).end;
+		console.log("Location Not Found error (",context,"):", error);
+		return;
+	default:
+		console.log("Express Server error (",context,"):", error);
+	}
 }
