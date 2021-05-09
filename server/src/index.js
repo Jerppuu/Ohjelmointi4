@@ -32,40 +32,49 @@ app.get(apiLocation, (req, res) => {
 	//return;
 	// proper response below in the works, atm uses the id of first hit i gets from locations
 	// TODO: implement better location id implementation and timeout for Foreca servers.
-		getLocation(req.params.location, token)
-			.then(async (result) => {
-				let responseJSON = {"forecast": []};
-				switch (result) {
-					case 0:
-						throw 0;
-					case 1:
-						throw 1;
-					default:
-						responseJSON.forecast.push({"daily": await getDaily(result, token)});
-						responseJSON.forecast.push({"hourly": await getHourly(result, token)});
-						return responseJSON;
-				}
-			})
-			.then(responseJSON => {res.json(responseJSON);})
-			.catch(error => {
-				errorCatch(error,apiLocation);
+	getLocation(req.params.location, token)
+		.then(async (result) => {
+			let responseJSON = {"forecast": []};
+			switch (result) {
+				case 0:
+					throw 0;
+				case 1:
+					throw 1;
+				default:
+					responseJSON.forecast.push({"daily": await getDaily(result, token)});
+					responseJSON.forecast.push({"hourly": await getHourly(result, token)});
+					return responseJSON;
+			}
+		})
+		.then(responseJSON => {res.json(responseJSON);})
+		.catch(error => {
+			errorCatch(error,apiLocation);
 	});
 });
-// TODO: solve responseJSON scope problem. Loop pushes data correctly, but function returns blank json.
+// TODO: solve responseJSON scope problem. Loop pushes data correctly, but response is sent after 2/4 fetches.
 app.get(apiMap, (req,res) => {
 	let responseJSON = {"map":[]};
-	mapMunicipalities.forEach(municipality => {
-		getLocation(municipality, token)
-			.then(result => {
-				switch (result) {
-					case 0:
-						throw 0;
-					case 1:
-						throw 1;
-					default:
-						 getDaily(result, token)
-							.then(response => {
-								responseJSON.map.push({
+
+	async function asyncForEach(arr, callback) {
+		for (let i=0;i<arr.length; i++) {
+			await callback(arr[i], i, arr);
+		}
+	}
+
+	const loop = async () => {
+		asyncForEach(mapMunicipalities, async (municipality) => {
+			await getLocation(municipality, token)
+				.then(result => {
+					switch (result) {
+						case 0:
+							throw 0;
+						case 1:
+							throw 1;
+						default:
+							getDaily(result, token)
+								.then(response => {
+									console.log(1)
+									responseJSON.map.push({
 										"location" : municipality,
 										"symbol": response[0].symbol,
 										"minTemp": response[0].minTemp,
@@ -74,15 +83,14 @@ app.get(apiMap, (req,res) => {
 										"precipProb": response[0].precipProb,
 										"maxWindSpeed": response[0].maxWindSpeed,
 										"windDir": response[0].windDir
+
 									});
-							}).catch(error => errorCatch(error,apiMap));
-				}
-			}).catch(error => {
-				errorCatch(error,apiMap);
-			})
-	});
-	console.log(responseJSON);
-	res.json(responseJSON);
+								}).catch(error => errorCatch(error,apiMap));
+					}
+				}).catch(error => errorCatch(error,apiMap));
+		}).then(res.json(responseJSON).end);
+	}
+	loop();
 });
 
 // atm uses the id of first hit it gets from locations
@@ -141,6 +149,7 @@ async function getHourly(id, token) {
 		.then(result => result.forecast)
 		.catch(error => errorCatch(error,getHourly.name));
 }
+
 
 function errorCatch(error, context){
 	switch (error) {
