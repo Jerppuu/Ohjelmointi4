@@ -48,7 +48,7 @@ app.get(apiLocation, (req, res) => {
 		})
 		.then(responseJSON => {res.json(responseJSON);})
 		.catch(error => {
-			errorCatch(error,apiLocation);
+			errorCatch(error,apiLocation,res);
 	});
 });
 // TODO: solve responseJSON scope problem. Loop pushes data correctly, but response is sent after 2/4 fetches.
@@ -85,9 +85,9 @@ app.get(apiMap, (req,res) => {
 										"windDir": response[0].windDir
 
 									});
-								}).catch(error => errorCatch(error,apiMap));
+								}).catch(error => errorCatch(error,apiMap,res));
 					}
-				}).catch(error => errorCatch(error,apiMap));
+				}).catch(error => errorCatch(error,apiMap,res));
 		});
 		res.json(responseJSON);
 	}
@@ -115,10 +115,7 @@ async function getLocation(municipality, token) {
 				}
 			});
 			return result;
-		}).catch(error => {
-			errorCatch(error,getLocation.name);
-			return 0;
-		});
+		}).catch(error => {return 0;});
 }
 
 async function getDaily(id, token) {
@@ -133,7 +130,7 @@ async function getDaily(id, token) {
 	return fetch( ForecaAddr + ForecaApiForecastDaily + id +"?periods=15", requestOptions)
 		.then(result => result.json())
 		.then(result => result.forecast)
-		.catch(error => errorCatch(error,getDaily.name));
+		.catch(error => {return 0});
 }
 
 async function getHourly(id, token) {
@@ -148,11 +145,11 @@ async function getHourly(id, token) {
 	return fetch(ForecaAddr + ForecaApiForecastHourly + id +"?periods=169", requestOptions)
 		.then(result => result.json())
 		.then(result => result.forecast)
-		.catch(error => errorCatch(error,getHourly.name));
+		.catch(error => {return 0});
 }
 
 
-function errorCatch(error, context){
+function errorCatch(error, context, res){
 	switch (error) {
 	case 0:
 		res.sendStatus(400).end;
