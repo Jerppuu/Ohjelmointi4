@@ -15,7 +15,7 @@ const ForecaAddr = 'https://pfa.foreca.com';
 const ForecaApiLocationSearch = '/api/v1/location/search/';
 const ForecaApiForecastDaily = '/api/v1/forecast/daily/';
 const ForecaApiForecastHourly = '/api/v1/forecast/hourly/';
-const token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9wZmEuZm9yZWNhLmNvbVwvYXV0aG9yaXplXC90b2tlbiIsImlhdCI6MTYyMDU0NTU1MCwiZXhwIjoxNjIwNTg4NzUwLCJuYmYiOjE2MjA1NDU1NTAsImp0aSI6IjVhMzNiMDNjZjBiM2M2NDIiLCJzdWIiOiJha2tlcGVra2EiLCJmbXQiOiJYRGNPaGpDNDArQUxqbFlUdGpiT2lBPT0ifQ.8MZlzKk-4wNHTtBd_W0C6_Mf0UUDpjQcwL36nU1AS4g";
+const token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9wZmEuZm9yZWNhLmNvbVwvYXV0aG9yaXplXC90b2tlbiIsImlhdCI6MTYyMDYyOTY4MiwiZXhwIjoxNjIwNjcyODgyLCJuYmYiOjE2MjA2Mjk2ODIsImp0aSI6ImUwMzJmMWYyMjg2OWVlYmIiLCJzdWIiOiJha2tlcGVra2EiLCJmbXQiOiJYRGNPaGpDNDArQUxqbFlUdGpiT2lBPT0ifQ.FlXO9eIwmZSwxBYXneMRFJFzfGZrYeUdEOvqDtsQ4h8";
 
 app.listen(port, () => {
 	console.log(`Express app listening at http://localhost:${port}`);
