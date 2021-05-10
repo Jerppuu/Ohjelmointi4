@@ -35,26 +35,34 @@ app.get(apiLocation, (req, res) => {
 	getLocation(req.params.location, token)
 		.then(async (result) => {
 			let responseJSON = {"forecast": []};
-			switch (result) {
-				case 0:
-					throw 0;
-				case 1:
-					throw 1;
-				default:
-					responseJSON.forecast.push({"daily": await getDaily(result, token)});
-					responseJSON.forecast.push({"hourly": await getHourly(result, token)});
-					return responseJSON;
-			}
+			responseJSON.forecast.push({"daily": await getDaily(result, token)});
+			responseJSON.forecast.push({"hourly": await getHourly(result, token)});
+			return responseJSON;
 		})
 		.then(responseJSON => {res.json(responseJSON);})
 		.catch(error => {
 			errorCatch(error,apiLocation,res);
 	});
 });
-// TODO: solve responseJSON scope problem. Loop pushes data correctly, but response is sent after 2/4 fetches.
+// TODO: The async Loop pushes data correctly, but response is sent after 2/4 fetches. Explicit fetch works fine.
 app.get(apiMap, (req,res) => {
 	let responseJSON = {"map":[]};
+	getLocation(mapMunicipalities[0], token)
+		.then(async (result) =>
+			getDaily(result, token).then(result => responseJSON.map.push({"Pelkosenniemi": result[0]})))
+		.then(()=>getLocation(mapMunicipalities[1], token))
+			.then(async (result) =>
+				getDaily(result, token).then(result => responseJSON.map.push({"Oulu": result[0]})))
+		.then(()=>getLocation(mapMunicipalities[2], token))
+			.then(async (result) =>
+				getDaily(result, token).then(result => responseJSON.map.push({"Kuopio": result[0]})))
+		.then(()=>getLocation(mapMunicipalities[3], token))
+			.then(async (result) =>
+				getDaily(result, token).then(result => responseJSON.map.push({"Tampere": result[0]})))
+		.then(()=>res.json(responseJSON))
+		.catch(error => errorCatch(error,apiMap,res));
 
+	/* Async Loop:
 	async function asyncForEach(arr, callback) {
 		for (let i=0;i<arr.length; i++) {
 			await callback(arr[i], i, arr);
@@ -92,6 +100,8 @@ app.get(apiMap, (req,res) => {
 		res.json(responseJSON);
 	}
 	loop();
+	*/
+
 });
 
 // atm uses the id of first hit it gets from locations
@@ -106,7 +116,10 @@ async function getLocation(municipality, token) {
 	};
 	// if you need more detailed dataset use argument: ?dataset=full
 	return fetch(ForecaAddr + ForecaApiLocationSearch + municipality, requestOptions)
-		.then(response => response.json())
+		.then(response => {
+			if (response.status===401) throw [2,"Invalid Token"];
+			if (response.ok) return response.json();
+		})
 		.then(data => {
 			let result = 1;
 			data.locations.forEach(location => {
@@ -114,8 +127,9 @@ async function getLocation(municipality, token) {
 					result = location.id;
 				}
 			});
+			if (result === 1) throw [1,"Not Found"];
 			return result;
-		}).catch(error => {return 0;});
+		}).catch(error => {throw error;});
 }
 
 async function getDaily(id, token) {
@@ -130,7 +144,7 @@ async function getDaily(id, token) {
 	return fetch( ForecaAddr + ForecaApiForecastDaily + id +"?periods=15", requestOptions)
 		.then(result => result.json())
 		.then(result => result.forecast)
-		.catch(error => {return 0});
+		.catch(error => {throw [0,error];});
 }
 
 async function getHourly(id, token) {
@@ -145,12 +159,12 @@ async function getHourly(id, token) {
 	return fetch(ForecaAddr + ForecaApiForecastHourly + id +"?periods=169", requestOptions)
 		.then(result => result.json())
 		.then(result => result.forecast)
-		.catch(error => {return 0});
+		.catch(error => {throw [0,error];});
 }
 
 
 function errorCatch(error, context, res){
-	switch (error) {
+	switch (error[0]) {
 	case 0:
 		res.sendStatus(400).end;
 		console.log("Foreca Server error (",context,"):", error);
@@ -159,7 +173,12 @@ function errorCatch(error, context, res){
 		res.sendStatus(404).end;
 		console.log("Location Not Found error (",context,"):", error);
 		return;
+	case 2:
+		res.sendStatus(400).end;
+		console.log("Invalid Token error (",context,"):", error);
+		return;
 	default:
-		console.log("Express Server error (",context,"):", error);
+		res.sendStatus(400).end;
+		console.log("General Express Server error (",context,"):", error);
 	}
 }
