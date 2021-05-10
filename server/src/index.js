@@ -6,8 +6,8 @@ const cors = require('cors');
 
 const app = express();
 const port = 3002;
-const mapMunicipalities = ["Pelkosenniemi","Oulu","Kuopio","Tampere"];
-timeoutms = 10000;
+const mapMunicipalities = ["Sodankylä","Oulu","Kuopio","Tampere"];
+timeoutms = 100;
 
 const apiLocation = '/api/search/:location';
 const apiMap = '/api/map';
@@ -48,10 +48,12 @@ app.get(apiLocation, (req, res) => {
 // The async Loop pushes data correctly, but response is sent after 2/4 fetches. Explicit fetch works fine.
 app.get(apiMap, (req,res) => {
 	let responseJSON = {"map":[]};
-	res.setTimeout(timeoutms, () => errorCatch([3,"timeout"],apiLocation,res));
+	res.setTimeout(timeoutms, () => {
+		errorCatch([3,"timeout"],apiLocation,res);
+	});
 	getLocation(mapMunicipalities[0], token)
 		.then(async (result) =>
-			getDaily(result, token).then(result => responseJSON.map.push({"Pelkosenniemi": result[0]})))
+			getDaily(result, token).then(result => responseJSON.map.push({"Sodankylä": result[0]})))
 		.then(()=>getLocation(mapMunicipalities[1], token))
 			.then(async (result) =>
 				getDaily(result, token).then(result => responseJSON.map.push({"Oulu": result[0]})))
@@ -61,7 +63,9 @@ app.get(apiMap, (req,res) => {
 		.then(()=>getLocation(mapMunicipalities[3], token))
 			.then(async (result) =>
 				getDaily(result, token).then(result => responseJSON.map.push({"Tampere": result[0]})))
-		.then(()=>res.json(responseJSON))
+		.then(()=>{
+			if (!res.headersSent) res.json(responseJSON)
+		})
 		.catch(error => errorCatch(error,apiMap,res));
 
 	/* Async Loop:
@@ -166,23 +170,24 @@ async function getHourly(id, token) {
 
 function errorCatch(error, context, res){
 	switch (error[0]) {
-	case 0:
-		res.sendStatus(400).end;
-		console.log("Foreca Server error (",context,"):", error);
-		return;
-	case 1:
-		res.sendStatus(404).end;
-		console.log("Location Not Found error (",context,"):", error);
-		return;
-	case 2:
-		res.sendStatus(400).end;
-		console.log("Invalid Token error (",context,"):", error);
-		return;
-	case 3:
-		//res.sendStatus(408).end; // express sends response already
-		console.log("Foreca Request Timeout error (",context,"):", error);
-	default:
-		res.sendStatus(400).end;
-		console.log("General Express Server error (",context,"):", error);
+		case 0:
+			res.sendStatus(400).end;
+			console.log("Foreca Server error (",context,"):", error);
+			return;
+		case 1:
+			res.sendStatus(404).end;
+			console.log("Location Not Found error (",context,"):", error);
+			return;
+		case 2:
+			res.sendStatus(400).end;
+			console.log("Invalid Token error (",context,"):", error);
+			return;
+		case 3:
+			res.sendStatus(408).end; // express sends response already
+			console.log("Foreca Request Timeout error (",context,"):", error);
+			return;
+		default:
+			res.sendStatus(400).end;
+			console.log("General Express Server error (",context,"):", error);
 	}
 }
