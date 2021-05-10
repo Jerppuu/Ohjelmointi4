@@ -4,6 +4,8 @@ import Search from "./Search";
 import Map from "./Map";
 import TodayPreview from "./TodayPreview";
 import ForecastView from "./ForecastView";
+import Popup from "./Popup";
+import NavBarContent from "./NavBarContent";
 
 const serverPort = ":3002";
 const serverAddr = "http://localhost"
@@ -47,6 +49,11 @@ function parseForecast(forecastJSON){
     return [daysArr,hoursArr];
 }
 
+function togglePopup(mode){
+    this.setState({popup: mode});
+}
+
+
 class App extends Component {
 
     constructor () {
@@ -54,7 +61,8 @@ class App extends Component {
         this.state = {
             daily : null,
             hourly : null,
-            municipality : "Oulu"
+            municipality : "Oulu",
+            popup: 0
         };
         getForecast = getForecast.bind(this);
     }
@@ -64,7 +72,8 @@ class App extends Component {
     }
     //  TODO: implement bottom links
     render() {
-        return (<div>
+        return (
+            <div>
             <div className="header">
                 <Logo/>
                 <Search getForecast = {getForecast}/>
@@ -79,20 +88,16 @@ class App extends Component {
                     </div>}
                 <Map/>
             </div>
-            <nav className="navbar navbar-expand-sm bg-primary navbar-dark" style={{position: "fixed",bottom: 0, width: "100%", height: "30px"}}>
-                <ul className="navbar-nav">
-                    <li className="nav-item">
-                        <a className="nav-link" href="#notready">Meistä</a>
-                    </li>
-                    <li className="nav-item">
-                        <a className="nav-link" href="#notready">Ohjeet</a>
-                    </li>
-                    <li className="nav-item">
-                        <a className="nav-link" href="#notready">Sivustokartta</a>
-                    </li>
-                </ul>
+            <nav className="bottomBar">
+                <button onClick={()=>togglePopup(1)} className="bottomButton">Meistä</button>
+                <button onClick={()=>togglePopup(2)} className="bottomButton">Ohjeet</button>
+                <button onClick={()=>togglePopup(3)} className="bottomButton">Sivustokartta</button>
             </nav>
-        </div>);
+
+                <NavBarContent mode={this.state.popup} togglePopup ={togglePopup}/>
+
+        </div>
+        );
     }
 }
 
