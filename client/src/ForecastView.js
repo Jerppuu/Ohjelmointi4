@@ -44,7 +44,7 @@ function ForecastView(props) {
 			!disabled? 	item = 	<button className="day" onClick={() => {setSwitchMainView(!switchMainView);setDayNum(j);setHourNum(24*j)}} >
 									{getDayForecast(daily[j])}
 								</button> :
-						item = 	<button className="day">
+						item = 	<button className="dayNextWeek">
 									{getDayForecast(daily[j])}
 								</button>;
 			content.push(item);
@@ -110,11 +110,11 @@ function ForecastView(props) {
 				</div>
 				<div className={switchMainView? "" : "hidden"}>
 					<div className="dayhours">
-						{createHours(hourNum,hourNum+23)}
+						{createHours(hourNum,hourNum+12)}
 					</div>
 					<div className="nav">
-						<button onClick={()=>{setSwitchMainView(!switchMainView)}} className="navButton" >Takaisin</button>
 						<button onClick={()=>{setHourNum(hourNum -24)}} className="navButton" disabled={hourNum <= 0}>Edellinen</button>
+						<button onClick={()=>{setSwitchMainView(!switchMainView)}} className="navButton" >Takaisin</button>
 						<button onClick={()=>{setHourNum(hourNum +24)}}  className="navButton" disabled={hourNum >= maxHours-24}>Seuraava</button>
 					</div>
 				</div>

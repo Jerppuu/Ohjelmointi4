@@ -1,7 +1,6 @@
 const express = require('express');
 const fetch = require("node-fetch");
 const path = require("path");
-const dummy = require("./other/dummy.json");
 const cors = require('cors');
 
 const app = express();
@@ -15,7 +14,7 @@ const ForecaAddr = 'https://pfa.foreca.com';
 const ForecaApiLocationSearch = '/api/v1/location/search/';
 const ForecaApiForecastDaily = '/api/v1/forecast/daily/';
 const ForecaApiForecastHourly = '/api/v1/forecast/hourly/';
-const token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9wZmEuZm9yZWNhLmNvbVwvYXV0aG9yaXplXC90b2tlbiIsImlhdCI6MTYyMDU0NTU1MCwiZXhwIjoxNjIwNTg4NzUwLCJuYmYiOjE2MjA1NDU1NTAsImp0aSI6IjVhMzNiMDNjZjBiM2M2NDIiLCJzdWIiOiJha2tlcGVra2EiLCJmbXQiOiJYRGNPaGpDNDArQUxqbFlUdGpiT2lBPT0ifQ.8MZlzKk-4wNHTtBd_W0C6_Mf0UUDpjQcwL36nU1AS4g";
+const token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9wZmEuZm9yZWNhLmNvbVwvYXV0aG9yaXplXC90b2tlbiIsImlhdCI6MTYyMDYyOTY4MiwiZXhwIjoxNjIwNjcyODgyLCJuYmYiOjE2MjA2Mjk2ODIsImp0aSI6ImUwMzJmMWYyMjg2OWVlYmIiLCJzdWIiOiJha2tlcGVra2EiLCJmbXQiOiJYRGNPaGpDNDArQUxqbFlUdGpiT2lBPT0ifQ.FlXO9eIwmZSwxBYXneMRFJFzfGZrYeUdEOvqDtsQ4h8";
 
 app.listen(port, () => {
 	console.log(`Express app listening at http://localhost:${port}`);
@@ -48,8 +47,8 @@ app.get(apiLocation, (req, res) => {
 		})
 		.then(responseJSON => {res.json(responseJSON);})
 		.catch(error => {
-			errorCatch(error,apiLocation);
-	});
+			errorCatch(error,apiLocation,res);
+		});
 });
 // TODO: solve responseJSON scope problem. Loop pushes data correctly, but response is sent after 2/4 fetches.
 app.get(apiMap, (req,res) => {
@@ -85,9 +84,9 @@ app.get(apiMap, (req,res) => {
 										"windDir": response[0].windDir
 
 									});
-								}).catch(error => errorCatch(error,apiMap));
+								}).catch(error => errorCatch(error,apiMap,res));
 					}
-				}).catch(error => errorCatch(error,apiMap));
+				}).catch(error => errorCatch(error,apiMap,res));
 		});
 		res.json(responseJSON);
 	}
@@ -115,10 +114,7 @@ async function getLocation(municipality, token) {
 				}
 			});
 			return result;
-		}).catch(error => {
-			errorCatch(error,getLocation.name);
-			return 0;
-		});
+		}).catch(error => {return 0;});
 }
 
 async function getDaily(id, token) {
@@ -133,7 +129,7 @@ async function getDaily(id, token) {
 	return fetch( ForecaAddr + ForecaApiForecastDaily + id +"?periods=15", requestOptions)
 		.then(result => result.json())
 		.then(result => result.forecast)
-		.catch(error => errorCatch(error,getDaily.name));
+		.catch(error => {return 0});
 }
 
 async function getHourly(id, token) {
@@ -148,21 +144,21 @@ async function getHourly(id, token) {
 	return fetch(ForecaAddr + ForecaApiForecastHourly + id +"?periods=169", requestOptions)
 		.then(result => result.json())
 		.then(result => result.forecast)
-		.catch(error => errorCatch(error,getHourly.name));
+		.catch(error => {return 0});
 }
 
 
-function errorCatch(error, context){
+function errorCatch(error, context, res){
 	switch (error) {
-	case 0:
-		res.sendStatus(400).end;
-		console.log("Foreca Server error (",context,"):", error);
-		return;
-	case 1:
-		res.sendStatus(404).end;
-		console.log("Location Not Found error (",context,"):", error);
-		return;
-	default:
-		console.log("Express Server error (",context,"):", error);
+		case 0:
+			res.sendStatus(400).end;
+			console.log("Foreca Server error (",context,"):", error);
+			return;
+		case 1:
+			res.sendStatus(404).end;
+			console.log("Location Not Found error (",context,"):", error);
+			return;
+		default:
+			console.log("Express Server error (",context,"):", error);
 	}
 }
