@@ -2,7 +2,7 @@ import React from 'react';
 
 function Logo() {
     return (
-        <div>
+        <div style={{fontSize: "25px"}}>
             Säätieto.fi
         </div>
     );

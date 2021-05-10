@@ -1,7 +1,6 @@
 const express = require('express');
 const fetch = require("node-fetch");
 const path = require("path");
-const dummy = require("./other/dummy.json");
 const cors = require('cors');
 
 const app = express();
@@ -44,7 +43,7 @@ app.get(apiLocation, (req, res) => {
 		.catch(error => {
 			errorCatch(error,apiLocation,res);
 	});
-});
+
 // The async Loop pushes data correctly, but response is sent after 2/4 fetches. Explicit fetch works fine.
 app.get(apiMap, (req,res) => {
 	let responseJSON = {"map":[]};

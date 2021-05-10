@@ -26,6 +26,37 @@ body {
   height: 50px;
 }
 
+.searchBar{
+  display: grid;
+  grid-template-columns: auto auto;
+}
+
+.searchInput{
+  padding: 5px;
+  font-size: 17px;
+  border: 1px solid grey;
+  float: left;
+  background: #f1f1f1;
+}
+
+.searchButton{
+  float: left;
+  padding: 5px;
+  background: deepskyblue;
+  color: white;
+  font-size: 17px;
+  border: 1px solid grey;
+  border-left: none;
+  cursor: pointer;
+  transition-duration: 0.4s;
+}
+
+.searchButton:hover{
+  background-color: white;
+  color: black;
+}
+
+
 .mainBody{
   display: grid;
   grid-template-columns: auto auto;
@@ -37,8 +68,21 @@ body {
 .leftSide {
   display: grid;
   grid-template-rows: 50% 50%;
-  align-items: stretch;
+  align-items: start;
   gap: 10px;
+}
+
+.todayView{
+  display: grid;
+  grid-template-columns: auto auto;
+  grid-template-rows: auto;
+  background-color: #aaa;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px;
+  border: 1px solid grey;
+
+
 }
 
 .weekdays{
@@ -46,7 +90,8 @@ body {
   grid-template-columns: auto auto auto auto;
   grid-template-rows: auto auto;
   justify-content: space-evenly;
-  gap: 50px;
+  gap: 15px;
+
 }
 
 .day{
@@ -54,13 +99,28 @@ body {
   width: 75px;
   border-style: solid;
   text-align: center;
+  background-color: #ddd;
+  border: 1px solid grey;
 }
+
+.dayNextWeek{
+  height: 100px;
+  width: 75px;
+  border-style: solid;
+  text-align: center;
+  background-color: #ddd;
+  border: 1px solid grey;
+  cursor: not-allowed;
+}
+
 .dayhours{
   display: grid;
-  grid-template-columns: auto auto auto;
-  grid-template-rows: auto auto;
+  grid-template-columns: auto auto auto auto auto auto auto;
+  grid-template-rows: auto;
   justify-content: space-evenly;
-  gap: 30px;
+  gap: 5px;
+
+
 }
 .nav{
   display: grid;
@@ -108,10 +168,45 @@ body {
 }
 
 .hour{
-  height: 150px;
-  width: 75px;
+  height: 120px;
+  width: 65px;
   border-style: solid;
+  background-color: #ddd;
+  border: 1px solid grey;
 
+}
+
+.bottomBar{
+  display: grid;
+  grid-template-columns: auto auto auto;
+  position: fixed;
+  bottom: 0px;
+  width: 100%;
+  height: 30px;
+  background-color: deepskyblue;
+  align-content: center;
+  justify-content: left;
+}
+
+.bottomButton{
+  background-color: deepskyblue;
+  color: white;
+  border: 2px solid deepskyblue;
+  border-radius: 0px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  transition-duration: 0.4s;
+  cursor: pointer;
+
+}
+
+
+.bottomButton:hover{
+  border: 2px solid deepskyblue;
+  background-color: white;
+  color: black;
 }
 
 .hidden{
@@ -131,19 +226,66 @@ body {
     height: 90px;
     text-align: center;
   }
+
+  .dayhours{
+    grid-template-columns: auto auto auto auto;
+    grid-template-rows: auto auto;
+    justify-content: space-evenly;
+    gap: 15px;
+  }
+}
+
+
+.popup-box {
+  position: fixed;
+  background: #00000050;
+  width: 100%;
+  height: 100vh;
+  top: 0;
+  left: 0;
+}
+
+.box {
+  position: relative;
+  width: 70%;
+  margin: 0 auto;
+  height: auto;
+  max-height: 70vh;
+  margin-top: calc(100vh - 85vh - 20px);
+  background: #fff;
+  border-radius: 4px;
+  padding: 20px;
+  border: 1px solid #999;
+  overflow: auto;
+}
+
+.close-icon {
+  content: 'x';
+  cursor: pointer;
+  position: fixed;
+  right: calc(15% - 30px);
+  top: calc(100vh - 85vh - 33px);
+  background: #ededed;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  line-height: 20px;
+  text-align: center;
+  border: 1px solid #999;
+  font-size: 20px;
 }
 
 @media (min-width: 1100px) {
   .header{
     justify-content: center;
-    gap: 225px;
+    gap: 275px;
 
   }
   .mainBody{
     justify-content: center;
     gap: 200px;
-
   }
+
 }
 
 

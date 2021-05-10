@@ -16,13 +16,20 @@ function Search(props) {
 		props.getForecast(city);
 		inputCity.current.value = null;
 	}
+
+	function handleKeyPress(e){
+		if (e.key === 'Enter'){
+			handleSearch()
+		}
+
+	}
 	return (
 		<div>
-			<input ref={inputCity} list={"paikkakunta-lista"} id={"valitse-paikkakunta"} type="text"/>
+			<input className="searchInput" placeholder="Syötä kaupunki..." ref={inputCity} list={"paikkakunta-lista"} id={"valitse-paikkakunta"} onKeyDown={handleKeyPress} type="text"/>
 			<datalist id={"paikkakunta-lista"}>
 				{Parser(options)}
 			</datalist>
-			<button onClick={handleSearch}>Hae</button>
+			<button className="searchButton" onClick={handleSearch}>Hae</button>
 		</div>
 	);
 }
