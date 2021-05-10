@@ -7,6 +7,7 @@ const cors = require('cors');
 const app = express();
 const port = 3002;
 const mapMunicipalities = ["Pelkosenniemi","Oulu","Kuopio","Tampere"];
+timeoutms = 10000;
 
 const apiLocation = '/api/search/:location';
 const apiMap = '/api/map';
@@ -31,7 +32,7 @@ app.get(apiLocation, (req, res) => {
 	//res.json(dummy); // uncomment to send dummy.json for dev purposes
 	//return;
 	// proper response below in the works, atm uses the id of first hit i gets from locations
-	// TODO: implement better location id implementation and timeout for Foreca servers.
+	res.setTimeout(timeoutms, () => errorCatch([3,"timeout"],apiLocation,res));
 	getLocation(req.params.location, token)
 		.then(async (result) => {
 			let responseJSON = {"forecast": []};
@@ -44,9 +45,10 @@ app.get(apiLocation, (req, res) => {
 			errorCatch(error,apiLocation,res);
 	});
 });
-// TODO: The async Loop pushes data correctly, but response is sent after 2/4 fetches. Explicit fetch works fine.
+// The async Loop pushes data correctly, but response is sent after 2/4 fetches. Explicit fetch works fine.
 app.get(apiMap, (req,res) => {
 	let responseJSON = {"map":[]};
+	res.setTimeout(timeoutms, () => errorCatch([3,"timeout"],apiLocation,res));
 	getLocation(mapMunicipalities[0], token)
 		.then(async (result) =>
 			getDaily(result, token).then(result => responseJSON.map.push({"Pelkosenniemi": result[0]})))
@@ -105,17 +107,16 @@ app.get(apiMap, (req,res) => {
 });
 
 // atm uses the id of first hit it gets from locations
-//TODO: Solve problem with ÄÖÅ. Returns Otherwise incorrectly notfound. Fetch supports utf-8 as def.
 async function getLocation(municipality, token) {
 	let requestOptions = {
 		method: 'GET',
 		headers: {
-			Authorization: 'Bearer '+token,
+			Authorization: 'Bearer '+token
 		},
 		redirect: 'follow'
 	};
 	// if you need more detailed dataset use argument: ?dataset=full
-	return fetch(ForecaAddr + ForecaApiLocationSearch + municipality, requestOptions)
+	return fetch(encodeURI(ForecaAddr + ForecaApiLocationSearch + municipality), requestOptions)
 		.then(response => {
 			if (response.status===401) throw [2,"Invalid Token"];
 			if (response.ok) return response.json();
@@ -177,6 +178,9 @@ function errorCatch(error, context, res){
 		res.sendStatus(400).end;
 		console.log("Invalid Token error (",context,"):", error);
 		return;
+	case 3:
+		//res.sendStatus(408).end; // express sends response already
+		console.log("Foreca Request Timeout error (",context,"):", error);
 	default:
 		res.sendStatus(400).end;
 		console.log("General Express Server error (",context,"):", error);
