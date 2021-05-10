@@ -31,7 +31,7 @@ app.get(apiLocation, (req, res) => {
 	//res.json(dummy); // uncomment to send dummy.json for dev purposes
 	//return;
 	// proper response below in the works, atm uses the id of first hit i gets from locations
-	res.setTimeout(timeoutms, () => errorCatch([3,"timeout"],apiLocation,res));
+	res.setTimeout(timeoutms, () => errorCatch([3, "timeout"], apiLocation, res));
 	getLocation(req.params.location, token)
 		.then(async (result) => {
 			let responseJSON = {"forecast": []};
@@ -39,11 +39,14 @@ app.get(apiLocation, (req, res) => {
 			responseJSON.forecast.push({"hourly": await getHourly(result, token)});
 			return responseJSON;
 		})
-		.then(responseJSON => {if (!res.headersSent) res.json(responseJSON);res.end})
+		.then(responseJSON => {
+			if (!res.headersSent) res.json(responseJSON);
+			res.end
+		})
 		.catch(error => {
-			errorCatch(error,apiLocation,res);
-	});
-
+			errorCatch(error, apiLocation, res);
+		});
+});
 // The async Loop pushes data correctly, but response is sent after 2/4 fetches. Explicit fetch works fine.
 app.get(apiMap, (req,res) => {
 	let responseJSON = {"map":[]};

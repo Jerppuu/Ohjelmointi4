@@ -67,6 +67,7 @@ class App extends Component {
             popup: 0
         };
         getForecast = getForecast.bind(this);
+        togglePopup = togglePopup.bind(this);
     }
 
     componentDidMount() {
