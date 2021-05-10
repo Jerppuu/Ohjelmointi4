@@ -7,7 +7,7 @@ const cors = require('cors');
 const app = express();
 const port = 3002;
 const mapMunicipalities = ["Sodankylä","Oulu","Kuopio","Tampere"];
-timeoutms = 100;
+timeoutms = 10000;
 
 const apiLocation = '/api/search/:location';
 const apiMap = '/api/map';
@@ -40,7 +40,7 @@ app.get(apiLocation, (req, res) => {
 			responseJSON.forecast.push({"hourly": await getHourly(result, token)});
 			return responseJSON;
 		})
-		.then(responseJSON => {res.json(responseJSON);})
+		.then(responseJSON => {if (!res.headersSent) res.json(responseJSON);res.end})
 		.catch(error => {
 			errorCatch(error,apiLocation,res);
 	});
@@ -64,7 +64,7 @@ app.get(apiMap, (req,res) => {
 			.then(async (result) =>
 				getDaily(result, token).then(result => responseJSON.map.push({"Tampere": result[0]})))
 		.then(()=>{
-			if (!res.headersSent) res.json(responseJSON)
+			if (!res.headersSent) {res.json(responseJSON);res.end;}
 		})
 		.catch(error => errorCatch(error,apiMap,res));
 

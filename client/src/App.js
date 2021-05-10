@@ -20,12 +20,14 @@ async function getForecast(cityName_var){
             switch (response.status) {
                 case 200:
                     return response.json();
-                case 404:
-                    throw "not found";
                 case 400:
                     throw "server err";
+                case 404:
+                    throw "not found";
+                case 408:
+                    throw "request timeout"
                 default:
-                    throw "server err";
+                    throw "unhandled server err";
             }})
         .then(result => parseForecast(result))
         .then(result => {

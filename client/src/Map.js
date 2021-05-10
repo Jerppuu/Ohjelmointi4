@@ -1,6 +1,5 @@
-import kartta from './imgs/karttaesim.png';
-import {Component, useRef} from "react";
-const mapImgURL = "localhost:3002/imgs/map.svg"
+import {Component} from "react";
+const mapImgURL = "http://localhost:3002/imgs/map.png"
 
 const serverPort = 3002;
 const serverAddr = "http://localhost:"
@@ -10,11 +9,11 @@ const api = "/api/map";
 
 class Map extends Component {
 	componentDidMount() {
-		const canvas = this.refs.canvas;
-		const ctx = canvas.getContext("2d");
-		const img = this.refs.image;
+		const canvas = this.refs.canvas
+		const ctx = canvas.getContext("2d")
+		const img = this.refs.image
 		img.onload = () => {
-			ctx.drawImage(img,0,0);
+			ctx.drawImage(img, 0, 0, 400, 900, 0,0,250, 475)
 		}
 	}
 
@@ -33,11 +32,9 @@ class Map extends Component {
 	render() {
 		return (
 		<>
-			<div>
-				<img ref={"image"} src={mapImgURL}/>
-			</div>
-			<div>
-				<canvas ref={"canvas"} width={"200px"} height={"500px"}/>
+			<div className="map">
+				<canvas ref="canvas" width={"200px"} height={"500px"}/>
+				<img ref="image" src={mapImgURL} className={"hidden"}/>
 			</div>
 		</>
 		)
