@@ -55,7 +55,6 @@ function togglePopup(mode){
     this.setState({popup: mode});
 }
 
-
 class App extends Component {
 
     constructor () {
@@ -89,14 +88,13 @@ class App extends Component {
                         <TodayPreview daily = {this.state.daily[0]} municipality = {this.state.municipality}/>
                         <ForecastView daily = {this.state.daily} hourly = {this.state.hourly} />
                     </div>}
-                <Map/>
+                    <Map/>
             </div>
             <nav className="bottomBar">
                 <button onClick={()=>togglePopup(1)} className="bottomButton">Meistä</button>
                 <button onClick={()=>togglePopup(2)} className="bottomButton">Ohjeet</button>
                 <button onClick={()=>togglePopup(3)} className="bottomButton">Sivustokartta</button>
             </nav>
-
                 <NavBarContent mode={this.state.popup} togglePopup ={togglePopup}/>
         </div>
         );

@@ -1,4 +1,4 @@
-import {Component} from "react";
+import {Component, useEffect, useRef} from "react";
 const mapImgURL = "http://localhost:3002/imgs/map.png"
 
 const serverPort = 3002;
@@ -13,22 +13,34 @@ async function getMapForecast() {
 		redirect: 'follow'
 	};
 	return fetch(serverAddr + serverPort + api, requestOptions)
-		.then(response =>response.json())
+		.then(response => {
+			switch (response.status) {
+				case 200:
+					return response.json();
+				case 400:
+					throw "server err";
+				case 404:
+					throw "not found";
+				case 408:
+					throw "request timeout"
+				default:
+					throw "unhandled server err";
+			}})
 		.catch(error => console.log('error', error));
 }
 
-class Map extends Component {
-	constructor () {
-		super();
-	}
+const Map = () => {
 
-	componentDidMount() {
-		const canvas = this.refs.canvas;
+	const canvasRef = useRef(null);
+	const imageRef = useRef(null);
+
+	useEffect(() => {
+		const canvas = canvasRef.current;
 		const ctx = canvas.getContext("2d");
-		const img = this.refs.image;
+		const image = imageRef.current;
 
-		img.onload = () => {
-			ctx.drawImage(img, 0, 0, 400, 900, 0, 0, 250, 475);
+		image.onload = () => {
+			ctx.drawImage(image, 0, 0, 400, 900, 0, 0, 250, 475);
 			getMapForecast()
 				.then(result => {
 					result.map.forEach(
@@ -41,17 +53,16 @@ class Map extends Component {
 					)
 				});
 			}
-	}
-	render(){
+	})
+
 		return (
 				<>
 					<div className="map">
-						<canvas ref="canvas" width={"250px"} height={"475px"}/>
-						<img ref="image" src={mapImgURL} className={"hidden"}/>
+						<canvas ref={canvasRef} width={"250px"} height={"475px"}/>
+						<img ref={imageRef} src={mapImgURL} className={"hidden"}/>
 					</div>
 				</>
 			);
-	}
 
 }
 
