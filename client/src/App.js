@@ -94,7 +94,6 @@ class App extends Component {
             <nav className="bottomBar">
                 <button onClick={()=>togglePopup(1)} className="bottomButton">Meistä</button>
                 <button onClick={()=>togglePopup(2)} className="bottomButton">Ohjeet</button>
-                <button onClick={()=>togglePopup(3)} className="bottomButton">Sivustokartta</button>
             </nav>
 
                 <NavBarContent mode={this.state.popup} togglePopup ={togglePopup}/>
