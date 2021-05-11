@@ -65,6 +65,10 @@ body {
   align-items: start;
 }
 
+.map{
+  align-content: center;
+}
+
 .leftSide {
   display: grid;
   grid-template-rows: 50% 50%;

@@ -1,11 +1,13 @@
 const express = require('express');
 const fetch = require("node-fetch");
 const path = require("path");
+const dummyForecast = require("./other/dummy.json");
+const dummyMap = require("./other/Map.json");
 const cors = require('cors');
 
 const app = express();
 const port = 3002;
-const mapMunicipalities = ["Sodankylä","Oulu","Kuopio","Tampere"];
+const mapMunicipalities = [["Sodankylä",110,110],["Oulu",110,220],["Kuopio",140,300],["Tampere",70,350]];
 timeoutms = 10000;
 
 const apiLocation = '/api/search/:location';
@@ -15,7 +17,7 @@ const ForecaAddr = 'https://pfa.foreca.com';
 const ForecaApiLocationSearch = '/api/v1/location/search/';
 const ForecaApiForecastDaily = '/api/v1/forecast/daily/';
 const ForecaApiForecastHourly = '/api/v1/forecast/hourly/';
-const token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9wZmEuZm9yZWNhLmNvbVwvYXV0aG9yaXplXC90b2tlbiIsImlhdCI6MTYyMDYyOTY4MiwiZXhwIjoxNjIwNjcyODgyLCJuYmYiOjE2MjA2Mjk2ODIsImp0aSI6ImUwMzJmMWYyMjg2OWVlYmIiLCJzdWIiOiJha2tlcGVra2EiLCJmbXQiOiJYRGNPaGpDNDArQUxqbFlUdGpiT2lBPT0ifQ.FlXO9eIwmZSwxBYXneMRFJFzfGZrYeUdEOvqDtsQ4h8";
+const token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9wZmEuZm9yZWNhLmNvbVwvYXV0aG9yaXplXC90b2tlbiIsImlhdCI6MTYyMDcxMTg4NywiZXhwIjoxNjIwNzU1MDg3LCJuYmYiOjE2MjA3MTE4ODcsImp0aSI6Ijc2ZTlhMDBjNzg1MTU3M2EiLCJzdWIiOiJha2tlcGVra2EiLCJmbXQiOiJYRGNPaGpDNDArQUxqbFlUdGpiT2lBPT0ifQ.jBVUnBIvhJLlnUwwL3Tc6pJ4rU_XYfnS5x5YTe_1CKs";
 
 app.listen(port, () => {
 	console.log(`Express app listening at http://localhost:${port}`);
@@ -28,43 +30,42 @@ app.use(express.static(path.join(__dirname,'public')));
 app.use(express.static(path.join(__dirname, "../../client/build")));
 
 app.get(apiLocation, (req, res) => {
-	//res.json(dummy); // uncomment to send dummy.json for dev purposes
-	//return;
+	res.json(dummyForecast); // uncomment to send dummy.json for dev purposes
+	return;
 	// proper response below in the works, atm uses the id of first hit i gets from locations
-	res.setTimeout(timeoutms, () => errorCatch([3, "timeout"], apiLocation, res));
+	res.setTimeout(timeoutms, () => errorCatch([3,"timeout"],apiLocation,res));
 	getLocation(req.params.location, token)
 		.then(async (result) => {
 			let responseJSON = {"forecast": []};
-			responseJSON.forecast.push({"daily": await getDaily(result, token)});
+			responseJSON.forecast.push({"daily": await getDaily(result, token,15)});
 			responseJSON.forecast.push({"hourly": await getHourly(result, token)});
 			return responseJSON;
 		})
-		.then(responseJSON => {
-			if (!res.headersSent) res.json(responseJSON);
-			res.end
-		})
+		.then(responseJSON => {if (!res.headersSent) res.json(responseJSON);res.end})
 		.catch(error => {
-			errorCatch(error, apiLocation, res);
+			errorCatch(error,apiLocation,res);
 		});
 });
 // The async Loop pushes data correctly, but response is sent after 2/4 fetches. Explicit fetch works fine.
 app.get(apiMap, (req,res) => {
-	let responseJSON = {"map":[]};
+	res.json(dummyMap); // uncomment to send dummy.json for dev purposes
+	return;
+	let responseJSON = { map:[]};
 	res.setTimeout(timeoutms, () => {
 		errorCatch([3,"timeout"],apiLocation,res);
 	});
-	getLocation(mapMunicipalities[0], token)
+	getLocation(mapMunicipalities[0][0], token)
 		.then(async (result) =>
-			getDaily(result, token).then(result => responseJSON.map.push({"Sodankylä": result[0]})))
-		.then(()=>getLocation(mapMunicipalities[1], token))
-			.then(async (result) =>
-				getDaily(result, token).then(result => responseJSON.map.push({"Oulu": result[0]})))
-		.then(()=>getLocation(mapMunicipalities[2], token))
-			.then(async (result) =>
-				getDaily(result, token).then(result => responseJSON.map.push({"Kuopio": result[0]})))
-		.then(()=>getLocation(mapMunicipalities[3], token))
-			.then(async (result) =>
-				getDaily(result, token).then(result => responseJSON.map.push({"Tampere": result[0]})))
+			getDaily(result, token,1).then(result => {result[0]["map"] = mapMunicipalities[0];responseJSON.map.push(result[0])}))
+		.then(()=>getLocation(mapMunicipalities[1][0], token))
+		.then(async (result) =>
+			getDaily(result, token,1).then(result => {result[0]["map"] = mapMunicipalities[1];responseJSON.map.push(result[0])}))
+		.then(()=>getLocation(mapMunicipalities[2][0], token))
+		.then(async (result) =>
+			getDaily(result, token,1).then(result => {result[0]["map"] = mapMunicipalities[2];responseJSON.map.push(result[0])}))
+		.then(()=>getLocation(mapMunicipalities[3][0], token))
+		.then(async (result) =>
+			getDaily(result, token,1).then(result => {result[0]["map"] = mapMunicipalities[3];responseJSON.map.push(result[0])}))
 		.then(()=>{
 			if (!res.headersSent) {res.json(responseJSON);res.end;}
 		})
@@ -139,7 +140,7 @@ async function getLocation(municipality, token) {
 		}).catch(error => {throw error;});
 }
 
-async function getDaily(id, token) {
+async function getDaily(id, token, periods=15) {
 	let requestOptions = {
 		method: 'GET',
 		headers: {
@@ -148,13 +149,21 @@ async function getDaily(id, token) {
 		redirect: 'follow'
 	};
 	// if you need more detailed dataset use argument: ?dataset=full
-	return fetch( ForecaAddr + ForecaApiForecastDaily + id +"?periods=15", requestOptions)
-		.then(result => result.json())
+	return fetch( ForecaAddr + ForecaApiForecastDaily + id +"?periods="+periods, requestOptions)
+		.then(result => {
+			if (result.status===429)
+				throw [4,"Rate Limited error"];
+			return result.json();
+		})
 		.then(result => result.forecast)
-		.catch(error => {throw [0,error];});
+		.catch(error => {
+			if (error[0]!==4)
+				throw [0,error]
+			throw error;
+		});
 }
 
-async function getHourly(id, token) {
+async function getHourly(id, token, periods=169) {
 
 	let requestOptions = {
 		method: 'GET',
@@ -163,7 +172,7 @@ async function getHourly(id, token) {
 		},
 		redirect: 'follow'
 	};
-	return fetch(ForecaAddr + ForecaApiForecastHourly + id +"?periods=169", requestOptions)
+	return fetch(ForecaAddr + ForecaApiForecastHourly + id +"?periods=" + periods, requestOptions)
 		.then(result => result.json())
 		.then(result => result.forecast)
 		.catch(error => {throw [0,error];});
@@ -187,6 +196,10 @@ function errorCatch(error, context, res){
 		case 3:
 			res.sendStatus(408).end; // express sends response already
 			console.log("Foreca Request Timeout error (",context,"):", error);
+			return;
+		case 4:
+			res.sendStatus(400).end;
+			console.log("Foreca Rate Limited error (",context,"):", error);
 			return;
 		default:
 			res.sendStatus(400).end;
