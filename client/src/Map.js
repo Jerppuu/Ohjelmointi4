@@ -29,11 +29,10 @@ async function getMapForecast() {
 		.catch(error => console.log('error', error));
 }
 
-const Map = () => {
+function Map(){
 
 	const canvasRef = useRef(null);
 	const imageRef = useRef(null);
-
 	useEffect(() => {
 		const canvas = canvasRef.current;
 		const ctx = canvas.getContext("2d");
@@ -45,10 +44,11 @@ const Map = () => {
 				.then(result => {
 					result.map.forEach(
 						(loc) => {
-							console.log(loc.map);
 							let symbolImg = new Image(50, 50);
 							symbolImg.src = "http://localhost:3002/imgs/" + loc.symbol + ".png";
 							ctx.drawImage(symbolImg, 0, 0, 150, 150, loc.map[1], loc.map[2], 50, 50);
+							ctx.font = "25px DejaVu Sans";
+							ctx.fillText(loc.temperature + "°C", loc.map[1], loc.map[2]+70);
 						}
 					)
 				});
@@ -75,48 +75,26 @@ export default Map;
 */
 
 /*{
-  "map":[
-    {
-      "date":"2021-05-11",
-      "symbol":"d430",
-      "maxTemp":8,
-      "minTemp":3,
-      "precipAccum":4.72,
-      "maxWindSpeed":4,
-      "windDir":223,
-      "map":["Sodankylä",110,110]},
-    {
-      "date":"2021-05-11",
-      "symbol":"d320",
-      "maxTemp":15,
-      "minTemp":7,
-      "precipAccum":5.3,
-      "maxWindSpeed":4,
-      "windDir":245,
-      "map":
-        ["Oulu",110,220]},
-    {
-      "date":"2021-05-11",
-      "symbol":"d200",
-      "maxTemp":21,
-      "minTemp":8,
-      "precipAccum":1.19,
-      "maxWindSpeed":6,
-      "windDir":177,
-      "map":
-        ["Kuopio",140,300]
-    },
-    {
-      "date":"2021-05-11",
-      "symbol":"d200",
-      "maxTemp":20,
-      "minTemp":11,
-      "precipAccum":0,
-      "maxWindSpeed":5,
-      "windDir":192,
-      "map":
-        ["Tampere",70,350]
-    }
-  ]
+ {
+	"map":
+		{
+			"time":"2021-05-11T13:47+03:00",
+			"symbol":"d300",
+			"symbolPhrase":"cloudy",
+			"temperature":15,
+			"feelsLikeTemp":15,
+			"relHumidity":75,
+			"dewPoint":11,
+			"windSpeed":3,
+			"windDirString":"SW",
+			"windGust":10,
+			"precipProb":6,
+			"precipRate":0,
+			"cloudiness":87,
+			"thunderProb":0,
+			"uvIndex":2,
+			"pressure":1012.05,
+			"visibility":33539
+ 	}
 }
  */

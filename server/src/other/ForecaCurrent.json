@@ -1,0 +1,5 @@
+{
+"current":
+{ "time":"2021-05-11T13:47+03:00", "symbol":"d300", "symbolPhrase":"cloudy", "temperature":15, "feelsLikeTemp":15, "relHumidity":75, "dewPoint":11, "windSpeed":3, "windDirString":"SW", "windGust":10, "precipProb":6, "precipRate":0,"cloudiness":87, "thunderProb":0, "uvIndex":2, "pressure":1012.05, "visibility":33539
+ }
+}

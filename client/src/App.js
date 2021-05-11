@@ -72,7 +72,7 @@ class App extends Component {
     componentDidMount() {
         getForecast(this.state.municipality);
     }
-    //  TODO: implement bottom links
+
     render() {
         return (
             <div>
