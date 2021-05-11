@@ -1,21 +1,26 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "YAWA",
+  "name": "Yet another weather app",
   "icons": [
     {
       "src": "favicon.ico",
-      "sizes": "64x64 32x32 24x24 16x16",
-      "type": "image/x-icon"
+      "sizes": "96x96 32x32 16x16",
+      "type": "image/png"
     },
     {
-      "src": "logo192.png",
+      "src": "apple-icon.png",
       "type": "image/png",
-      "sizes": "192x192"
+      "sizes": "60x60 76x76 114x114 144x144 152x152 180x180"
     },
     {
-      "src": "logo512.png",
+      "src": "ms-icon.png",
       "type": "image/png",
-      "sizes": "512x512"
+      "sizes": "70x70 144x144 150x150 310x310"
+    },
+    {
+      "src": "android-icon.png",
+      "type": "image/png",
+      "sizes": "36x36 48x48 72x72 96x96 144x144 192x192"
     }
   ],
   "start_url": ".",
