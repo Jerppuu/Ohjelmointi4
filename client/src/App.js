@@ -4,14 +4,13 @@ import Search from "./Search";
 import Map from "./Map";
 import TodayPreview from "./TodayPreview";
 import ForecastView from "./ForecastView";
-import Popup from "./Popup";
 import NavBarContent from "./NavBarContent";
 
 const serverPort = ":3002";
 const serverAddr = "http://localhost"
 const api = "/api/search/";
 
-// TODO: Implement search errors so that user is informed
+// TODO: Implement search errors so that the user is informed
 async function getForecast(cityName_var){
     var requestOptions = {
         method: 'GET',

@@ -28,8 +28,8 @@ async function getMapForecast() {
 			}})
 		.catch(error => console.log('error', error));
 }
-
-function Map(){
+// TODO: Does not render properly. Temperature renders fine, but images are left missing. ATM server helps out by delaying dummy JSONs.
+function Map(props){
 
 	const canvasRef = useRef(null);
 	const imageRef = useRef(null);
@@ -44,10 +44,10 @@ function Map(){
 				.then(result => {
 					result.map.forEach(
 						(loc) => {
-							let symbolImg = new Image(50, 50);
+							let symbolImg = new Image(40, 40);
 							symbolImg.src = "http://localhost:3002/imgs/" + loc.symbol + ".png";
 							ctx.drawImage(symbolImg, 0, 0, 150, 150, loc.map[1], loc.map[2], 50, 50);
-							ctx.font = "25px DejaVu Sans";
+							ctx.font = "20px DejaVu Sans";
 							ctx.fillText(loc.temperature + "°C", loc.map[1], loc.map[2]+70);
 						}
 					)
@@ -58,7 +58,7 @@ function Map(){
 		return (
 				<>
 					<div className="map">
-						<canvas ref={canvasRef} width={"250px"} height={"475px"}/>
+						<canvas ref={canvasRef} width={"250px"} height={"500px"}/>
 						<img ref={imageRef} src={mapImgURL} className={"hidden"}/>
 					</div>
 				</>
@@ -75,26 +75,29 @@ export default Map;
 */
 
 /*{
- {
-	"map":
-		{
-			"time":"2021-05-11T13:47+03:00",
-			"symbol":"d300",
-			"symbolPhrase":"cloudy",
-			"temperature":15,
-			"feelsLikeTemp":15,
-			"relHumidity":75,
-			"dewPoint":11,
-			"windSpeed":3,
-			"windDirString":"SW",
-			"windGust":10,
-			"precipProb":6,
-			"precipRate":0,
-			"cloudiness":87,
-			"thunderProb":0,
-			"uvIndex":2,
-			"pressure":1012.05,
-			"visibility":33539
- 	}
+ "map":[
+    {
+      "time":"2021-05-11T13:47+03:00",
+      "symbol":"d300",
+      "symbolPhrase":"cloudy",
+      "temperature":15,
+      "feelsLikeTemp":15,
+      "relHumidity":75,
+      "dewPoint":11,
+      "windSpeed":3,
+      "windDirString":"SW",
+      "windGust":10,
+      "precipProb":6,
+      "precipRate":0,
+      "cloudiness":87,
+      "thunderProb":0,
+      "uvIndex":2,
+      "pressure":1012.05,
+      "visibility":33539,
+      "map":["Sodankylä",110,110]},
+    }
+    ,
+    ...
+    ]
 }
  */
