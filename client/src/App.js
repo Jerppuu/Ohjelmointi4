@@ -98,7 +98,6 @@ class App extends Component {
             </nav>
 
                 <NavBarContent mode={this.state.popup} togglePopup ={togglePopup}/>
-
         </div>
         );
     }

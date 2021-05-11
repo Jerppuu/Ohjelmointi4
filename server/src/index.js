@@ -150,17 +150,13 @@ async function getDaily(id, token, periods=15) {
 	};
 	// if you need more detailed dataset use argument: ?dataset=full
 	return fetch( ForecaAddr + ForecaApiForecastDaily + id +"?periods="+periods, requestOptions)
-		.then(result => {
-			if (result.status===429)
+		.then(response => {
+			if (response.status===429)
 				throw [4,"Rate Limited error"];
-			return result.json();
+			if (response.ok) return response.json();
 		})
 		.then(result => result.forecast)
-		.catch(error => {
-			if (error[0]!==4)
-				throw [0,error]
-			throw error;
-		});
+		.catch(error => {throw error;});
 }
 
 async function getHourly(id, token, periods=169) {
