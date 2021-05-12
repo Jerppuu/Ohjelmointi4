@@ -8,7 +8,7 @@ const app = express();
 const port = 3002;
 // municipalities on client's map, (name,x(px),y(px))
 const mapMunicipalities = [["Utsjoki",130,20],["Sodankylä",110,120],["Oulu",110,220],["Seinäjoki",160,310],["Joensuu",50,310],["Helsinki",80,420]];
-// in case of Foreca server timesout
+// in case of Foreca server times out
 const timeoutms = 10000;
 
 // local apis
@@ -23,10 +23,10 @@ const ForecaApiForecastHourly = '/api/v1/forecast/hourly/';
 const ForecaAPiCurrent = '/api/v1/current/';
 
 // Shared secret with Foreca
-const token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9wZmEuZm9yZWNhLmNvbVwvYXV0aG9yaXplXC90b2tlbiIsImlhdCI6MTYyMDcxMTg4NywiZXhwIjoxNjIwNzU1MDg3LCJuYmYiOjE2MjA3MTE4ODcsImp0aSI6Ijc2ZTlhMDBjNzg1MTU3M2EiLCJzdWIiOiJha2tlcGVra2EiLCJmbXQiOiJYRGNPaGpDNDArQUxqbFlUdGpiT2lBPT0ifQ.jBVUnBIvhJLlnUwwL3Tc6pJ4rU_XYfnS5x5YTe_1CKs";
+const token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9wZmEuZm9yZWNhLmNvbVwvYXV0aG9yaXplXC90b2tlbiIsImlhdCI6MTYyMDg0MjUyOCwiZXhwIjoxNjIwODQ2MTI4LCJuYmYiOjE2MjA4NDI1MjgsImp0aSI6ImVjY2ZjNTNjN2Q3ZGQ4NzkiLCJzdWIiOiJha2tlcGVra2EiLCJmbXQiOiJYRGNPaGpDNDArQUxqbFlUdGpiT2lBPT0ifQ.0uAR_tMowLl4DeFDAhl0qphP4kdiNX-oPZWJ9E1O4j4";
 
 /// please flip the switch bitch
-const debugOn = true // false true; // send dummy jsons
+const debugOn = true; // false true; // send dummy jsons
 
 app.listen(port, () => {
 	let debug = "";
@@ -75,22 +75,22 @@ app.get(apiMap, (req,res) => {
 	res.setTimeout(timeoutms, () => errorCatch([3,"timeout"],apiLocation,res));
 	getLocation(mapMunicipalities[0][0], token)
 		.then(async (response) =>
-			getCurrent(response, token,1).then(response => {response["map"] = mapMunicipalities[0];responseJSON.map.push(result)}))
+			getCurrent(response, token,1).then(response => {response["map"] = mapMunicipalities[0];responseJSON.map.push(response)}))
 		.then(()=>getLocation(mapMunicipalities[1][0], token))
 		.then(async (response) =>
-			getCurrent(response, token,1).then(response => {response["map"] = mapMunicipalities[1];responseJSON.map.push(result)}))
+			getCurrent(response, token,1).then(response => {response["map"] = mapMunicipalities[1];responseJSON.map.push(response)}))
 		.then(()=>getLocation(mapMunicipalities[2][0], token))
 		.then(async (response) =>
-			getCurrent(response, token,1).then(response => {response["map"] = mapMunicipalities[2];responseJSON.map.push(result)}))
+			getCurrent(response, token,1).then(response => {response["map"] = mapMunicipalities[2];responseJSON.map.push(response)}))
 		.then(()=>getLocation(mapMunicipalities[3][0], token))
 		.then(async (response) =>
-			getCurrent(response, token,1).then(response => {response["map"] = mapMunicipalities[3];responseJSON.map.push(result)}))
+			getCurrent(response, token,1).then(response => {response["map"] = mapMunicipalities[3];responseJSON.map.push(response)}))
 		.then(()=>getLocation(mapMunicipalities[4][0], token))
 		.then(async (response) =>
-			getCurrent(response, token,1).then(response => {response["map"] = mapMunicipalities[4];responseJSON.map.push(result)}))
+			getCurrent(response, token,1).then(response => {response["map"] = mapMunicipalities[4];responseJSON.map.push(response)}))
 		.then(()=>getLocation(mapMunicipalities[5][0], token))
 		.then(async (response) =>
-			getCurrent(response, token,1).then(response => {response["map"] = mapMunicipalities[5];responseJSON.map.push(result)}))
+			getCurrent(response, token,1).then(response => {response["map"] = mapMunicipalities[5];responseJSON.map.push(response)}))
 		.then(()=>{
 			if (!res.headersSent) {res.json(responseJSON);res.end;}
 		})
