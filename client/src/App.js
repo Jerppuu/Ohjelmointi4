@@ -22,7 +22,7 @@ class App extends Component {
             hourly : null,
             municipality : startLocation,
             popup: 0,
-            error: 0
+            errorCode: 0
         };
         getForecast = getForecast.bind(this);
         togglePopup = togglePopup.bind(this);
@@ -38,7 +38,7 @@ class App extends Component {
             <div>
             <div className="header">
                 <Logo/>
-                <Search getForecast = {getForecast}/>
+                <Search getForecast = {getForecast} errorCode = {this.state.errorCode}/>
             </div>
 
             <div className="mainBody">
@@ -76,7 +76,7 @@ async function getForecast(cityName_var){
             this.setState({hourly: response[1]});
             this.setState({municipality: cityName_var});
         })
-        .catch(error => console.log('error', error));
+        .catch(error => this.setState({errorCode: error}));
 }
 
 function parseForecast(forecastJSON){
