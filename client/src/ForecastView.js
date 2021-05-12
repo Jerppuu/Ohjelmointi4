@@ -5,12 +5,16 @@ function ForecastView(props) {
 
 	const [switchMainView, setSwitchMainView] = useState(false);
 	const [switchWeekView, setSwitchWeekView] = useState(false);
-	const [dayNum, setDayNum] = useState(0);
+	const [, setDayNum] = useState(0);
 	const [hourNum, setHourNum] = useState(0);
 	const maxDays = 14;
 	const maxHours = 168;
 	let daily = props.daily;
 	let hourly = props.hourly;
+
+	const serverAddr = props.configs.serverAddr
+	const serverPort = props.configs.serverPort
+	const apiImgs = props.configs.apiImgs
 
 	function getDayName(date) {
 		let names = [
@@ -32,7 +36,7 @@ function ForecastView(props) {
 	// "windDir":55
 	// }
 	function getDayForecast(day) {
-		let path = "http://localhost:3002/imgs/";
+		let path = serverAddr + serverPort + apiImgs;
 		let imglink = path + day.symbol + ".png";
 		let tempAvg = ((day.maxTemp + day.minTemp) / 2).toFixed(0);
 		return <div>{getDayName(day.date)} <img src={imglink} alt="dayweather" height={"50px"}/>{tempAvg}°C</div>
@@ -64,7 +68,7 @@ function ForecastView(props) {
 		"precipAccum": 0
 	}*/
 	function getHourForecast(hour) {
-		let path_var = "http://localhost:3002/imgs/";
+		let path_var = serverAddr + serverPort + apiImgs;
 		let imglink_var = path_var + hour.symbol + ".png";
 		let hour_var = new Date(hour.time).getHours();
 		return 	<div>
@@ -84,7 +88,6 @@ function ForecastView(props) {
 		return content;
 	}
 
-	// createDays for testing purposes for now
 	if (daily === null || hourly === null)
 		return (<div>Loading...</div>);
 	return (

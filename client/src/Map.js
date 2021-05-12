@@ -1,36 +1,13 @@
-import {Component, useEffect, useRef} from "react";
-const mapImgURL = "http://localhost:3002/imgs/map.png"
+import {useEffect, useRef} from "react";
 
-const serverPort = 3002;
-const serverAddr = "http://localhost:"
-const api = "/api/map";
-
-// TODO: finish map
-
-async function getMapForecast() {
-	var requestOptions = {
-		method: 'GET',
-		redirect: 'follow'
-	};
-	return fetch(serverAddr + serverPort + api, requestOptions)
-		.then(response => {
-			switch (response.status) {
-				case 200:
-					return response.json();
-				case 400:
-					throw "server err";
-				case 404:
-					throw "not found";
-				case 408:
-					throw "request timeout"
-				default:
-					throw "unhandled server err";
-			}})
-		.catch(error => console.log('error', error));
-}
 // TODO: Does not render properly. Temperature renders fine, but images are left missing. ATM server helps out by delaying dummy JSONs.
 function Map(props){
 
+	//const [loaded, setLoaded] = useState(false);
+	const serverAddr = props.configs.serverAddr
+	const serverPort = props.configs.serverPort
+	const mapImg = props.configs.mapImg
+	const apiImgs = props.configs.apiImgs
 	const canvasRef = useRef(null);
 	const imageRef = useRef(null);
 	useEffect(() => {
@@ -40,18 +17,19 @@ function Map(props){
 
 		image.onload = () => {
 			ctx.drawImage(image, 0, 0, 400, 900, 0, 0, 250, 475);
-			getMapForecast()
+			props.getMapForecast()
 				.then(result => {
 					result.map.forEach(
 						(loc) => {
 							let symbolImg = new Image(40, 40);
-							symbolImg.src = "http://localhost:3002/imgs/" + loc.symbol + ".png";
+							symbolImg.src = serverAddr + serverPort + apiImgs + loc.symbol + ".png";
 							ctx.drawImage(symbolImg, 0, 0, 150, 150, loc.map[1], loc.map[2], 50, 50);
 							ctx.font = "20px DejaVu Sans";
 							ctx.fillText(loc.temperature + "°C", loc.map[1], loc.map[2]+70);
 						}
 					)
-				});
+				})
+				.catch(error => console.log("error: ", error));
 			}
 	})
 
@@ -59,7 +37,7 @@ function Map(props){
 				<>
 					<div className="map">
 						<canvas ref={canvasRef} width={"250px"} height={"500px"}/>
-						<img ref={imageRef} src={mapImgURL} className={"hidden"}/>
+						<img ref={imageRef} src={serverAddr+serverPort+apiImgs+mapImg} className={"hidden"}/>
 					</div>
 				</>
 			);
@@ -67,12 +45,6 @@ function Map(props){
 }
 
 export default Map;
-
-/*
-<div className="map">
-	<img src={kartta} alt="Map"/>
-</div>
-*/
 
 /*{
  "map":[

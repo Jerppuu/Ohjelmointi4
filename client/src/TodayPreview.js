@@ -1,8 +1,10 @@
 import React from 'react';
 
-const imgURL = "http://localhost:3002/imgs/";
-
 function TodayPreview(props) {
+
+	const serverAddr = props.configs.serverAddr
+	const serverPort = props.configs.serverPort
+	const apiImgs = props.configs.apiImgs
 
 	// {
 	// "date":"2021-05-05",
@@ -19,7 +21,7 @@ function TodayPreview(props) {
 	];
 
 	let weekday = weekdays[new Date(props.daily.date).getDay()]; // results in day abbr.
-	let imglink = imgURL + props.daily.symbol + ".png";
+	let imgURL = serverAddr + serverPort + apiImgs + props.daily.symbol + ".png";
 	let tempAvg = ((props.daily.maxTemp + props.daily.minTemp) / 2).toFixed(0);
 
 	return (
@@ -29,7 +31,7 @@ function TodayPreview(props) {
 				<p style={{fontSize: "20pt", margin: "10px"}}>{tempAvg}°C</p>
 			</div>
 			<div>
-				<img src={imglink} alt="weather" height={"75px"}/>
+				<img src={imgURL} alt="weather" height={"75px"}/>
 			</div>
 
 		</div>

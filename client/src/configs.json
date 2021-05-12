@@ -1,0 +1,11 @@
+{
+  "configs" : {
+    "serverAddr" : "http://localhost",
+    "serverPort" : ":3002",
+    "apiSearch" : "/api/search/",
+    "apiImgs" : "/imgs/",
+    "apiMap" : "/api/map",
+    "mapImg" : "map.png",
+    "startLocation" : "Oulu"
+  }
+}
