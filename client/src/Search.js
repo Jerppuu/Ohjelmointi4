@@ -1,4 +1,4 @@
-import React, {useRef, useState} from "react";
+import {useRef, useState} from "react";
 import Parser from 'html-react-parser';
 import kunnat from "./other/kunnat";
 
@@ -12,17 +12,30 @@ function Search(props) {
 	const [errorState, setErrorState] = useState(false);
 	const delayInMs = 1000; //= 1 seconds
 
-	function handleSearch (){
+	function handleSearch() {
 		const city = inputCity.current.value;
 		if (city === '') return;
-		props.getForecast(city);
-		if (props.errorCode !== 0){
-			setErrorState(true);
-			setTimeout(function () {
-				setErrorState(false);
-			}, delayInMs);
-		}
-		inputCity.current.value = null;
+		props.getForecast(city).then(errorCode => {
+			console.log("Handle search error code: ", errorCode);
+			switch (errorCode) {
+				case 0:
+					setErrorState(false);
+					inputCity.current.value = null;
+					break;
+				case 1:
+				case 2:
+					setErrorState(true);
+					inputCity.current.value = null;
+					setTimeout(function () {
+						setErrorState(false)
+						props.setAppErrorState(0);
+					}, delayInMs);
+
+					break;
+				case 3:
+				case 4:
+			}
+		});
 	}
 
 	function handleSearchError(){

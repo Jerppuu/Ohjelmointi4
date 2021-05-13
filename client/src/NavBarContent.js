@@ -1,4 +1,3 @@
-import React from 'react';
 import Popup from "./Popup";
 import GitHubLogo from "./other/GitHub_Logo.png"
 

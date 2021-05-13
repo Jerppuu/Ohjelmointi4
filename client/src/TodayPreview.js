@@ -1,5 +1,3 @@
-import React from 'react';
-
 function TodayPreview(props) {
 
 	const serverAddr = props.configs.serverAddr
