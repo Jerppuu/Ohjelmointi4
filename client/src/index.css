@@ -39,6 +39,18 @@ body {
   background: #f1f1f1;
 }
 
+.searchInputError{
+  padding: 5px;
+  font-size: 17px;
+  border: 1px solid red;
+  float: left;
+  background: #f1f1f1;
+  color: red;
+  opacity: 1;
+  outline: none;
+
+}
+
 .searchButton{
   float: left;
   padding: 5px;

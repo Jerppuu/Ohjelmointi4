@@ -1,4 +1,4 @@
-import React, {useRef} from "react";
+import React, {useRef, useState} from "react";
 import Parser from 'html-react-parser';
 import kunnat from "./other/kunnat";
 
@@ -9,12 +9,24 @@ for (let i = 0; i < kunnat.length; i++) {
 
 function Search(props) {
 	const inputCity = useRef();
+	const [errorState, setErrorState] = useState(false);
+	const delayInMs = 1000; //= 1 seconds
 
 	function handleSearch (){
 		const city = inputCity.current.value;
 		if (city === '') return;
 		props.getForecast(city);
+		if (props.errorCode !== 0){
+			setErrorState(true);
+			setTimeout(function () {
+				setErrorState(false);
+			}, delayInMs);
+		}
 		inputCity.current.value = null;
+	}
+
+	function handleSearchError(){
+
 	}
 
 	function handleKeyPress(e){
@@ -25,7 +37,7 @@ function Search(props) {
 	}
 	return (
 		<div>
-			<input className="searchInput" placeholder="Syötä kaupunki..." ref={inputCity} list={"paikkakunta-lista"} id={"valitse-paikkakunta"} onKeyDown={handleKeyPress} type="text"/>
+			<input className={errorState? "searchInputError" : "searchInput"} placeholder={errorState? "Yritä uudelleen!" : "Syötä kaupunki..."} ref={inputCity} list={"paikkakunta-lista"} id={"valitse-paikkakunta"} onKeyDown={handleKeyPress} type="text"/>
 			<datalist id={"paikkakunta-lista"}>
 				{Parser(options)}
 			</datalist>
