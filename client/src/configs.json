@@ -6,6 +6,6 @@
     "apiImgs" : "/imgs/",
     "apiMap" : "/api/map",
     "mapImg" : "map.png",
-    "startLocation" : "Oulu"
+    "startLocation" : ["Oulu","Suomi"]
   }
 }

@@ -20,7 +20,7 @@ class App extends Component {
         this.state = {
             daily : null,
             hourly : null,
-            municipality : startLocation,
+            location : startLocation, // [locationCity,locationCountry]
             popup: 0,
             error: 0
         };
@@ -30,7 +30,7 @@ class App extends Component {
     }
 
     componentDidMount() {
-        getForecast(this.state.municipality);
+        getForecast(this.state.location[0]);
     }
 
     render() {
@@ -45,7 +45,7 @@ class App extends Component {
                 {(this.state.daily === null)?
                     <div className="leftSide"/>:
                     <div className="leftSide">
-                        <TodayPreview daily = {this.state.daily[0]} municipality = {this.state.municipality} configs = {configs.configs}/>
+                        <TodayPreview daily = {this.state.daily[0]} location = {this.state.location} configs = {configs.configs}/>
                         <ForecastView daily = {this.state.daily} hourly = {this.state.hourly} configs = {configs.configs} />
                     </div>}
                     <Map configs = {configs.configs} getMapForecast = {getMapForecast} />
@@ -72,9 +72,10 @@ async function getForecast(cityName_var){
         .then(response => responseCatch(response))
         .then(response => parseForecast(response))
         .then(response => {
+            console.log(response);
             this.setState({daily: response[0]});
             this.setState({hourly: response[1]});
-            this.setState({municipality: cityName_var});
+            this.setState({location: response[2]});
         })
         .catch(error => console.log('error', error));
 }
@@ -83,7 +84,7 @@ function parseForecast(forecastJSON){
     let daysArr = [], hoursArr = [];
     forecastJSON.forecast[0].daily.forEach(day => {daysArr.push(day);});
     forecastJSON.forecast[1].hourly.forEach(hour => {hoursArr.push(hour);});
-    return [daysArr,hoursArr];
+    return [daysArr,hoursArr,forecastJSON.forecast[2].location];
 }
 
 function togglePopup(mode){
