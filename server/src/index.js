@@ -69,8 +69,8 @@ app.get(apiLocation, (req, res) => {
 app.get(apiMap, (req, res) => {
 	if (debugOn) {
 		// TODO: DIRTY HACK enable proper Map rendering on client when latency is very low and using dummy jsons
-		//setTimeout(()=>res.json(dummyMap),100);
-		res.json(dummyMap);
+		setTimeout(()=>res.json(dummyMap),100);
+		//res.json(dummyMap);
 		return;
 	}
 	let responseJSON = {map: []};
