@@ -16,13 +16,17 @@ function Search(props) {
 		const city = inputCity.current.value;
 		if (city === '') return;
 		props.getForecast(city);
-		if(props.errorCode !== 0){
+		if (props.errorCode !== 0){
 			setErrorState(true);
 			setTimeout(function () {
 				setErrorState(false);
 			}, delayInMs);
 		}
 		inputCity.current.value = null;
+	}
+
+	function handleSearchError(){
+
 	}
 
 	function handleKeyPress(e){

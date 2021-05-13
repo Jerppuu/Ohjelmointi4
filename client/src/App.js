@@ -1,11 +1,11 @@
 import React, {Component} from 'react';
 import Logo from "./Logo";
-import Search from "./Search";
 import Map from "./Map";
 import TodayPreview from "./TodayPreview";
 import ForecastView from "./ForecastView";
 import NavBarContent from "./NavBarContent";
 import configs from "./configs.json";
+import Search from "./Search";
 
 const serverAddr = configs.configs.serverAddr;
 const serverPort = configs.configs.serverPort;
@@ -22,6 +22,7 @@ class App extends Component {
             hourly : null,
             location : startLocation, // [locationCity,locationCountry]
             popup: 0,
+            error: 0,
             errorCode: 0
         };
         getForecast = getForecast.bind(this);
@@ -72,12 +73,13 @@ async function getForecast(cityName_var){
         .then(response => responseCatch(response))
         .then(response => parseForecast(response))
         .then(response => {
-            console.log(response);
+            //console.log(response);
             this.setState({daily: response[0]});
             this.setState({hourly: response[1]});
             this.setState({location: response[2]});
         })
         .catch(error => this.setState({errorCode: error}));
+    console.log(this.state.errorCode);
 }
 
 function parseForecast(forecastJSON){
@@ -102,14 +104,15 @@ async function getMapForecast() {
 
 function responseCatch(response){
         switch (response.status) {
-        case 200:
+            case 200:
             return response.json();
+            this.setState({error:0})
         case 400:
             this.setState({error:1})
             throw "server err";
         case 404:
             this.setState({error:2})
-            throw "not found";
+            throw "not found ";
         case 408:
             this.setState({error:3})
             throw "request timeout"
