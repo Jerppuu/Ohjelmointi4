@@ -12,11 +12,12 @@ function Search(props) {
 	const [errorState, setErrorState] = useState(false);
 	const delayInMs = 1000; //= 1 seconds
 
-	function handleSearch (){
+	async function handleSearch() {
 		const city = inputCity.current.value;
 		if (city === '') return;
-		props.getForecast(city);
-		if (props.errorCode !== 0){
+		const errorCode = await props.getForecast(city).then(value => value);
+		console.log("Handle search error code: ", errorCode);
+		if (errorCode !== 0) {
 			setErrorState(true);
 			setTimeout(function () {
 				setErrorState(false);

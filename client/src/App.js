@@ -22,9 +22,9 @@ class App extends Component {
             hourly : null,
             location : startLocation, // [locationCity,locationCountry]
             popup: 0,
-            error: 0,
-            errorCode: 0
+            error: 0
         };
+
         getForecast = getForecast.bind(this);
         togglePopup = togglePopup.bind(this);
         responseCatch = responseCatch.bind(this);
@@ -78,8 +78,9 @@ async function getForecast(cityName_var){
             this.setState({hourly: response[1]});
             this.setState({location: response[2]});
         })
-        .catch(error => this.setState({errorCode: error}));
-    console.log(this.state.errorCode);
+        .catch(error => console.log('Mikä tää on', error));
+    console.log("Get forecastin errorcode: ", this.state.error);
+    return this.state.error;
 }
 
 function parseForecast(forecastJSON){
@@ -105,8 +106,8 @@ async function getMapForecast() {
 function responseCatch(response){
         switch (response.status) {
             case 200:
-            return response.json();
-            this.setState({error:0})
+                this.setState({error:0})
+                return response.json();
         case 400:
             this.setState({error:1})
             throw "server err";
