@@ -39,7 +39,7 @@ class App extends Component {
             <div>
             <div className="header">
                 <Logo/>
-                <Search getForecast = {getForecast} errorCode = {this.state.errorCode}/>
+                <Search getForecast = {getForecast} error = {this.state.error}/>
             </div>
 
             <div className="mainBody">
@@ -78,9 +78,7 @@ async function getForecast(cityName_var){
             this.setState({hourly: response[1]});
             this.setState({location: response[2]});
         })
-        .catch(error => console.log('Mikä tää on', error));
-    console.log("Get forecastin errorcode: ", this.state.error);
-    return this.state.error;
+        .catch(error => console.log("error: ", error));
 }
 
 function parseForecast(forecastJSON){

@@ -9,25 +9,12 @@ for (let i = 0; i < kunnat.length; i++) {
 
 function Search(props) {
 	const inputCity = useRef();
-	const [errorState, setErrorState] = useState(false);
-	const delayInMs = 1000; //= 1 seconds
 
-	async function handleSearch() {
+	function handleSearch() {
 		const city = inputCity.current.value;
 		if (city === '') return;
-		const errorCode = await props.getForecast(city).then(value => value);
-		console.log("Handle search error code: ", errorCode);
-		if (errorCode !== 0) {
-			setErrorState(true);
-			setTimeout(function () {
-				setErrorState(false);
-			}, delayInMs);
-		}
+		props.getForecast(city);
 		inputCity.current.value = null;
-	}
-
-	function handleSearchError(){
-
 	}
 
 	function handleKeyPress(e){
@@ -38,7 +25,7 @@ function Search(props) {
 	}
 	return (
 		<div>
-			<input className={errorState? "searchInputError" : "searchInput"} placeholder={errorState? "Yritä uudelleen!" : "Syötä kaupunki..."} ref={inputCity} list={"paikkakunta-lista"} id={"valitse-paikkakunta"} onKeyDown={handleKeyPress} type="text"/>
+			<input className={props.error !== 0? "searchInputError" : "searchInput"} placeholder={props.error !== 0? "Yritä uudelleen!" : "Syötä kaupunki..."} ref={inputCity} list={"paikkakunta-lista"} id={"valitse-paikkakunta"} onKeyDown={handleKeyPress} type="text"/>
 			<datalist id={"paikkakunta-lista"}>
 				{Parser(options)}
 			</datalist>
