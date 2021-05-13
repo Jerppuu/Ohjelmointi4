@@ -23,11 +23,14 @@ function TodayPreview(props) {
 	let weekday = weekdays[new Date(props.daily.date).getDay()]; // results in day abbr.
 	let imgURL = serverAddr + serverPort + apiImgs + props.daily.symbol + ".png";
 	let tempAvg = ((props.daily.maxTemp + props.daily.minTemp) / 2).toFixed(0);
+	let previewLocation = props.location[0];
+	if (props.location[1]!=="Suomi")
+		previewLocation = `${previewLocation}, ${props.location[1]}`;
 
-	return (
+	return(
 		<div className="todayView">
 			<div>
-				<p style={{fontSize: "20pt", margin: "10px"}}>{props.municipality} nyt </p>
+				<p style={{fontSize: "20pt", margin: "10px"}}>{previewLocation} nyt </p>
 				<p style={{fontSize: "20pt", margin: "10px"}}>{tempAvg}°C</p>
 			</div>
 			<div>
