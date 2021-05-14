@@ -8,8 +8,10 @@ function Map(props){
 	const serverPort = props.configs.serverPort
 	const mapImg = props.configs.mapImg
 	const apiImgs = props.configs.apiImgs
+
 	const canvasRef = useRef(null);
 	const imageRef = useRef(null);
+
 	useEffect(() => {
 		const canvas = canvasRef.current;
 		const ctx = canvas.getContext("2d");
@@ -22,10 +24,12 @@ function Map(props){
 					result.map.forEach(
 						(loc) => {
 							let symbolImg = new Image(40, 40);
+							symbolImg.onload = () => {
+								ctx.drawImage(symbolImg, 0, 0, 150, 150, loc.map[1], loc.map[2], 50, 50);
+								ctx.font = "20px DejaVu Sans";
+								ctx.fillText(loc.temperature + "°C", loc.map[1], loc.map[2]+70);
+							}
 							symbolImg.src = serverAddr + serverPort + apiImgs + loc.symbol + ".png";
-							ctx.drawImage(symbolImg, 0, 0, 150, 150, loc.map[1], loc.map[2], 50, 50);
-							ctx.font = "20px DejaVu Sans";
-							ctx.fillText(loc.temperature + "°C", loc.map[1], loc.map[2]+70);
 						}
 					)
 				})

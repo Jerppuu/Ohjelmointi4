@@ -1,6 +1,5 @@
 import {Component} from 'react';
-import { Toast } from 'react-lite-toast'
-import 'react-lite-toast/dist/index.css'
+import ReactNotifications from 'react-notifications-component';
 
 import Logo from "./Logo";
 import Map from "./Map";
@@ -8,6 +7,7 @@ import TodayPreview from "./TodayPreview";
 import ForecastView from "./ForecastView";
 import NavBarContent from "./NavBarContent";
 import Search from "./Search";
+import ErrorNotification from "./ErrorNotification";
 
 import configs from "./configs.json";
 
@@ -39,45 +39,30 @@ class App extends Component {
         getForecast(this.state.location[0]);
     }
 
-    setToast = () => {
-        this.setState(prevState => ({
-            notification: !prevState.notification
-        }));
-    };
-
     render() {
         return (
             <div>
-            <div className="header">
-                <Logo/>
-                <Search getForecast = {getForecast}/>
-                <button onClick={() => this.setToast()}>Click me</button>
-                {this.state.notification && (
-                    <Toast
-                        type="success"
-                        title="Completed"
-                        description="Flippity flip"
-                        position="bottomup"
-                        duration={1500}
-                    />
-                )}
+                <ReactNotifications/>
+                <div className="header">
+                    <Logo/>
+                    <Search getForecast = {getForecast}/>
+                </div>
+                <div className="mainBody">
+                    {(this.state.daily === null)?
+                        <div className="leftSide"/>:
+                        <div className="leftSide">
+                            <TodayPreview daily = {this.state.daily[0]} location = {this.state.location} configs = {configs.configs}/>
+                            <ForecastView daily = {this.state.daily} hourly = {this.state.hourly} configs = {configs.configs} />
+                        </div>}
+                        <Map configs = {configs.configs} getMapForecast = {getMapForecast} />
+                </div>
+                <nav className="bottomBar">
+                    <button onClick={()=>togglePopup(1)} className="bottomButton">Meistä</button>
+                    <button onClick={()=>togglePopup(2)} className="bottomButton">Ohjeet</button>
+                </nav>
+                    <NavBarContent mode={this.state.popup} togglePopup ={togglePopup}/>
+                {this.state.error>1?<ErrorNotification/>:<div/>}
             </div>
-
-            <div className="mainBody">
-                {(this.state.daily === null)?
-                    <div className="leftSide"/>:
-                    <div className="leftSide">
-                        <TodayPreview daily = {this.state.daily[0]} location = {this.state.location} configs = {configs.configs}/>
-                        <ForecastView daily = {this.state.daily} hourly = {this.state.hourly} configs = {configs.configs} />
-                    </div>}
-                    <Map configs = {configs.configs} getMapForecast = {getMapForecast} />
-            </div>
-            <nav className="bottomBar">
-                <button onClick={()=>togglePopup(1)} className="bottomButton">Meistä</button>
-                <button onClick={()=>togglePopup(2)} className="bottomButton">Ohjeet</button>
-            </nav>
-                <NavBarContent mode={this.state.popup} togglePopup ={togglePopup}/>
-        </div>
         );
     }
 }
@@ -90,7 +75,6 @@ function togglePopup(mode){
 function setErrorState(mode) {
     this.setState({error:mode});
 }
-// TODO: Implement search errors so that the user is informed
 
 async function getForecast(cityName_var){
     let requestOptions = {
@@ -141,16 +125,20 @@ function responseCatch(response){
                 this.setState({error:2})
                 throw 2;
             case 404:
-                this.setState({error:1});
+                if (this.setState!==1)
+                    this.setState({error:1});
                 throw 1;
             case 500:
-                this.setState({error:2});
+                if (this.setState!==2)
+                    this.setState({error:2});
                 throw 2;
             case 504:
-                this.setState({error:3});
+                if (this.setState!==3)
+                    this.setState({error:3});
                 throw 3;
             default:
-                this.setState({error:4});
+                if (this.setState!==4)
+                    this.setState({error:4});
                 throw 4;
         }
 }

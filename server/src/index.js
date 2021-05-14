@@ -45,7 +45,6 @@ app.use(express.static(path.join(__dirname, "../../client/build")));
 app.get(apiLocation, (req, res) => {
 	if (debugOn) {
 		res.json(dummyForecast);
-		//res.sendStatus(404);
 		res.end();
 		return;
 	}
@@ -67,12 +66,12 @@ app.get(apiLocation, (req, res) => {
 
 // API for client's map
 // TODO: The async Loop would push data correctly, but response is sent after 2/4 fetches. Explicit fetch below works fine.
-// TODO: supports at the moment 6 locations! If async loop would work client could request any number and location it wishes.
+// TODO: supports at the moment 6 locations! If async loop would work, client could request any number and location it wishes.
 app.get(apiMap, (req, res) => {
 	if (debugOn) {
-		// TODO: DIRTY HACK enable proper Map rendering on client when latency is very low and using dummy jsons
-		setTimeout(()=>res.json(dummyMap),100);
-		//res.json(dummyMap);
+		//res.sendStatus(404)
+		res.json(dummyMap);
+		res.end;
 		return;
 	}
 	let responseJSON = {map: []};
