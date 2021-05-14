@@ -8,7 +8,7 @@ import ForecastView from "./ForecastView";
 import NavBarContent from "./NavBarContent";
 import Search from "./Search";
 import ErrorNotification from "./ErrorNotification";
-
+import {LocationNotFoundError,OurGatewayError,ForecaTimeoutError,TooManyRequestsError,SomethingExplodedError} from "./Errors";
 import configs from "./configs.json";
 
 const serverAddr = configs.configs.serverAddr;
@@ -33,6 +33,7 @@ class App extends Component {
         togglePopup = togglePopup.bind(this);
         responseCatch = responseCatch.bind(this);
         setErrorState = setErrorState.bind(this);
+        console.log()
     }
 
     componentDidMount() {
@@ -52,9 +53,9 @@ class App extends Component {
                         <div className="leftSide"/>:
                         <div className="leftSide">
                             <TodayPreview daily = {this.state.daily[0]} location = {this.state.location} configs = {configs.configs}/>
-                            <ForecastView daily = {this.state.daily} hourly = {this.state.hourly} configs = {configs.configs} />
+                            <ForecastView daily = {this.state.daily} hourly = {this.state.hourly} configs = {configs.configs}/>
                         </div>}
-                        <Map configs = {configs.configs} getMapForecast = {getMapForecast} />
+                        <Map getMapForecast = {getMapForecast} configs = {configs.configs}/>
                 </div>
                 <nav className="bottomBar">
                     <button onClick={()=>togglePopup(1)} className="bottomButton">Meistä</button>
@@ -81,7 +82,7 @@ async function getForecast(cityName_var){
         method: 'GET',
         redirect: 'follow'
     };
-    let errorCode = fetch(serverAddr + serverPort + apiSearch + cityName_var, requestOptions)
+    return fetch(serverAddr + serverPort + apiSearch + cityName_var, requestOptions)
         .then(response => responseCatch(response))
         .then(response => parseForecast(response))
         .then(response => {
@@ -92,7 +93,6 @@ async function getForecast(cityName_var){
         }).catch(error => {
             return error;
         });
-    return errorCode;
 }
 
 function parseForecast(forecastJSON){
@@ -123,22 +123,26 @@ function responseCatch(response){
                     return response.json()
                 }
                 this.setState({error:2})
-                throw 2;
+                throw new OurGatewayError();
             case 404:
                 if (this.setState!==1)
                     this.setState({error:1});
-                throw 1;
+                throw new LocationNotFoundError();
             case 500:
                 if (this.setState!==2)
                     this.setState({error:2});
-                throw 2;
+                throw new OurGatewayError();
             case 504:
                 if (this.setState!==3)
                     this.setState({error:3});
-                throw 3;
-            default:
+                throw new ForecaTimeoutError();
+            case 429:
                 if (this.setState!==4)
                     this.setState({error:4});
-                throw 4;
+                throw new TooManyRequestsError();
+            default:
+                if (this.setState!==5)
+                    this.setState({error:5});
+                throw new SomethingExplodedError();
         }
 }

@@ -3,7 +3,6 @@ import {useEffect, useRef} from "react";
 // TODO: Does not render properly. Temperature renders fine, but images are left missing. ATM server helps out by delaying dummy JSONs.
 function Map(props){
 
-	//const [loaded, setLoaded] = useState(false);
 	const serverAddr = props.configs.serverAddr
 	const serverPort = props.configs.serverPort
 	const mapImg = props.configs.mapImg
@@ -36,18 +35,18 @@ function Map(props){
 						}
 					)
 				})
-				.catch(error => console.log("error: ", error));
+				.catch(error => console.log("Map.js: ", error));
 			}
-	})
+	});
 
-		return (
-				<>
-					<div className="map">
-						<canvas ref={canvasRef} width={"250px"} height={"500px"}/>
-						<img ref={imageRef} src={serverAddr+serverPort+apiImgs+mapImg} className={"hidden"}/>
-					</div>
-				</>
-			);
+	return (
+			<>
+				<div className="map">
+					<canvas ref={canvasRef} width={"250px"} height={"500px"}/>
+					<img ref={imageRef} src={serverAddr+serverPort+apiImgs+mapImg} className={"hidden"} alt={"Sääkartta"}/>
+				</div>
+			</>
+		);
 
 }
 

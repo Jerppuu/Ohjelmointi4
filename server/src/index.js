@@ -1,11 +1,14 @@
 const express = require('express');
 const fetch = require("node-fetch");
 const path = require("path");
+
 const dummyForecast = require("./other/dummy.json");
 const dummyMap = require("./other/Map.json");
 const cors = require('cors');
+
 const app = express();
 const port = 3002;
+
 // municipalities on client's map, (name,x(px),y(px))
 const mapLocations = [["Utsjoki", 130, 20], ["Sodankylä", 110, 120], ["Oulu", 110, 220], ["Seinäjoki", 160, 310], ["Joensuu", 50, 310], ["Helsinki", 80, 420]];
 // in case of Foreca server times out
@@ -26,7 +29,7 @@ const ForecaAPiCurrent = '/api/v1/current/';
 const token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9wZmEuZm9yZWNhLmNvbVwvYXV0aG9yaXplXC90b2tlbiIsImlhdCI6MTYyMDk3MTAwNiwiZXhwIjoxNjIxMDE0MjA2LCJuYmYiOjE2MjA5NzEwMDYsImp0aSI6ImQ2MjlkOTM1OTViZmE0YWYiLCJzdWIiOiJha2tlcGVra2EiLCJmbXQiOiJYRGNPaGpDNDArQUxqbFlUdGpiT2lBPT0ifQ.JPYyA8O2EQJrv9gTIEAY3lEXgN0Y_BmNJA3gj_6MSP4";
 
 /// please flip the switch bitch
-const debugOn = false; // false true; // send dummy jsons
+const debugOn = true; // false true; // send dummy jsons
 
 app.listen(port, () => {
 	let debug = "";
@@ -45,10 +48,11 @@ app.use(express.static(path.join(__dirname, "../../client/build")));
 app.get(apiLocation, (req, res) => {
 	if (debugOn) {
 		res.json(dummyForecast);
+		//res.sendStatus(404);
 		res.end();
 		return;
 	}
-	res.setTimeout(timeoutms, () => errorCatch([3, "timeout"], apiLocation, res));
+	res.setTimeout(timeoutms, () => errorCatch(ForecaTimeoutError, apiLocation, res));
 	getLocation(req.params.location, token)
 		.then(async (response) => {
 			let responseJSON = {"forecast": []};
@@ -75,7 +79,7 @@ app.get(apiMap, (req, res) => {
 		return;
 	}
 	let responseJSON = {map: []};
-	res.setTimeout(timeoutms, () => errorCatch([3, "timeout"], apiLocation, res));
+	res.setTimeout(timeoutms, () => errorCatch(ForecaTimeoutError, apiLocation, res));
 	getLocation(mapLocations[0][0], token)
 		.then(async (response) =>
 			getCurrent(response[0], token, 1).then(response => {
@@ -188,7 +192,7 @@ async function getLocation(location, token) {
 					skip = true;
 				}
 			});
-			if (result === 1) throw [1, "Not Found"];
+			if (result === 1) throw new LocationNotFoundError(location);
 			return result;
 		}).catch(error => {
 			throw error
@@ -254,43 +258,106 @@ async function responseCatch(response) {
 	switch (response.status) {
 		case 200:
 			if (response.ok) return response.json();
-			else throw [0, "Something funky in response:", response];
+			else throw new SomethingExplodedError("Something funky in response code 200:", response);
 		case 400:
-			throw [0, "Foreca Server error"];
+			throw new ForecaRejectionError("Foreca Server error");
 		case 401:
-			throw [2, "Invalid Token error"];
+			throw new InvalidTokenError("Invalid Token error");
 		case 429:
-			throw [4, "Limited Rate error"];
+			throw new TooManyRequestsError("Limited Rate error");
 		default:
-			throw [0, "Foreca Server error - unhandled" + response.status];
+			throw new SomethingExplodedError("Response status:", response.status,response);
 	}
 }
 
 // Handle errors.
 function errorCatch(error, context, res) {
-	switch (error[0]) {
-		case 0:
+	switch (error.constructor) {
+		case ForecaRejectionError:
 			res.sendStatus(502).end;
 			console.log("Foreca Server error (", context, "):", error);
 			return;
-		case 1:
+		case LocationNotFoundError:
 			res.sendStatus(404).end;
-			console.log("Location Not Found error (", context, "):", error);
+			console.log("Location Not Found error (", context, "):", error.message);
 			return;
-		case 2:
+		case InvalidTokenError:
 			res.sendStatus(500).end;
 			console.log("Invalid Token error (", context, "):", error);
 			return;
-		case 3:
-			res.sendStatus(504).end; // express sends response already
+		case ForecaTimeoutError:
+			res.sendStatus(504).end;
 			console.log("Foreca Request Timeout error (", context, "):", error);
 			return;
-		case 4:
-			res.sendStatus(500).end;
+		case TooManyRequestsError:
+			res.sendStatus(429).end;
 			console.log("Foreca Rate Limited error (", context, "):", error);
 			return;
 		default:
 			res.sendStatus(500).end;
 			console.log("General Express Server error (", context, "):", error);
+	}
+}
+
+class LocationNotFoundError extends Error {
+	constructor(message) {
+		super(message);
+		this.name = "LocationNotFoundError";
+		this.code = 1;
+		this.message = message;
+	}
+}
+
+class OurGatewayError extends Error {
+	constructor(message) {
+		super(message);
+		this.name = "OurGatewayError";
+		this.code = 2;
+		this.message = message;
+	}
+}
+
+class ForecaTimeoutError extends Error {
+	constructor(message) {
+		super(message);
+		this.name = "ForecaTimeoutError";
+		this.code = 3;
+		this.message = message;
+	}
+}
+
+class TooManyRequestsError extends Error {
+	constructor(message) {
+		super(message);
+		this.name = "TooManyRequestsError";
+		this.code = 4;
+		this.message = message;
+	}
+}
+
+class SomethingExplodedError extends Error {
+	constructor(message) {
+		super(message);
+		this.name = "SomethingExplodedError";
+		this.code = 5;
+		this.message = message;
+	}
+}
+
+class ForecaRejectionError extends Error {
+	constructor(message) {
+		super(message);
+		this.name = "ForecaRejectionError";
+		this.code = 6;
+		this.message = message;
+	}
+}
+
+class InvalidTokenError extends Error {
+	constructor(message) {
+		super(message);
+		this.name = "InvalidTokenError";
+		this.code = 6;
+		this.message = message;
 	}
 }

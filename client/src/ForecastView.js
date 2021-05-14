@@ -61,10 +61,10 @@ function ForecastView(props) {
 		let content = [];
 		for (let j = start; j <= (end); j++) {
 			let item;
-			!disabled? 	item = 	<button className="day" onClick={() => {setSwitchMainView(!switchMainView);setDayNum(j);}} >
+			!disabled? 	item = 	<button key={j} className="day" onClick={() => {setSwitchMainView(!switchMainView);setDayNum(j);}} >
 									{getDayForecast(daily[j])}
 								</button> :
-						item = 	<button className="dayNextWeek">
+						item = 	<button key={j} className="dayNextWeek">
 									{getDayForecast(daily[j])}
 								</button>;
 			content.push(item);
@@ -97,7 +97,7 @@ function ForecastView(props) {
 		let content = [];
 		for (let i=0;i<=hourly[dayNum][1].length-1;i=i+2)
 		{
-			content.push(	<button className="hour">
+			content.push(	<button key={i} className="hour">
 								{getHourForecast(hourly[dayNum][1][i])}
 							</button>
 			);

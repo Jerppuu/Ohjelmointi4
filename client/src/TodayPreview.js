@@ -14,11 +14,6 @@ function TodayPreview(props) {
 	// "windDir":55
 	// }
 
-	let weekdays = [
-		"Sunnuntai", "Maanantai", "Tiistai", "Keskiviikko", "Torstai", "Perjantai", "Lauantai"
-	];
-
-	let weekday = weekdays[new Date(props.daily.date).getDay()]; // results in day abbr.
 	let imgURL = serverAddr + serverPort + apiImgs + props.daily.symbol + ".png";
 	let tempAvg = ((props.daily.maxTemp + props.daily.minTemp) / 2).toFixed(0);
 	let previewLocation = props.location[0];

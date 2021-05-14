@@ -1,6 +1,7 @@
 import {useRef, useState} from "react";
 import Parser from 'html-react-parser';
 import kunnat from "./other/kunnat";
+import {LocationNotFoundError} from "./Errors";
 
 let options = '';
 for (let i = 0; i < kunnat.length; i++) {
@@ -13,31 +14,27 @@ function Search(props) {
 	const delayms = 1000; //= 1 seconds
 
 	function handleSearch() {
+		console.log()
 		const city = inputCity.current.value;
 		if (city === '') return;
-		props.getForecast(city).then(errorCode => {
-			console.log("Handle search error code: ", errorCode);
-			switch (errorCode) {
-				case 0:
-					setErrorState(false);
-					inputCity.current.value = null;
-					break;
-				case 1:
+		props.getForecast(city).then(error => {
+			inputCity.current.value = null;
+			if (error===0) {
+				setErrorState(false);
+				return;
+			}
+			switch (error.constructor) {
+				case LocationNotFoundError:
 					setErrorState(true);
 					inputCity.current.value = null;
 					setTimeout(function () {
 						setErrorState(false)
 					}, delayms);
-					break;
-				case 2:
-				case 3:
-				case 4:
+					return;
+				default:
+					console.log("Should we handle this in Search?",error)
 			}
 		});
-	}
-
-	function handleSearchError(){
-
 	}
 
 	function handleKeyPress(e){
