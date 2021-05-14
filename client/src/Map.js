@@ -27,6 +27,9 @@ function Map(props){
 							symbolImg.onload = () => {
 								ctx.drawImage(symbolImg, 0, 0, 150, 150, loc.map[1], loc.map[2], 50, 50);
 								ctx.font = "20px DejaVu Sans";
+								if (loc.temperature>24)ctx.fillStyle = "red";
+								else if (loc.temperature<-20)ctx.fillStyle = "blue";
+								else ctx.fillStyle = "black";
 								ctx.fillText(loc.temperature + "°C", loc.map[1], loc.map[2]+70);
 							}
 							symbolImg.src = serverAddr + serverPort + apiImgs + loc.symbol + ".png";
