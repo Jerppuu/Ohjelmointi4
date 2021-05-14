@@ -26,7 +26,7 @@ const ForecaAPiCurrent = '/api/v1/current/';
 const token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9wZmEuZm9yZWNhLmNvbVwvYXV0aG9yaXplXC90b2tlbiIsImlhdCI6MTYyMDk3MTAwNiwiZXhwIjoxNjIxMDE0MjA2LCJuYmYiOjE2MjA5NzEwMDYsImp0aSI6ImQ2MjlkOTM1OTViZmE0YWYiLCJzdWIiOiJha2tlcGVra2EiLCJmbXQiOiJYRGNPaGpDNDArQUxqbFlUdGpiT2lBPT0ifQ.JPYyA8O2EQJrv9gTIEAY3lEXgN0Y_BmNJA3gj_6MSP4";
 
 /// please flip the switch bitch
-const debugOn = true; // false true; // send dummy jsons
+const debugOn = false; // false true; // send dummy jsons
 
 app.listen(port, () => {
 	let debug = "";
@@ -171,16 +171,19 @@ async function getLocation(location, token) {
 		},
 		redirect: 'follow'
 	};
+
+	let splitLocation = location.split(",");
 	// TODO: Returns the first match it gets from the response locations list
 	// if you need more detailed dataset use an additional argument: ?dataset=full
-	return fetch(encodeURI(ForecaAddr + ForecaApiLocationSearch + location + "?lang=fi"), requestOptions)
+	return fetch(encodeURI(ForecaAddr + ForecaApiLocationSearch + splitLocation[0] + "?lang=fi"), requestOptions)
 		.then(response => responseCatch(response))
 		.then(response => {
 			let result = 1, skip = false;
 			// the result may return multiple locations, check the search String against them and return the right one
 			response.locations.forEach(loc => {
 				if (skip) return;
-				if (loc.name === location) {
+				console.log(splitLocation[0],splitLocation[1],loc.country);
+				if (loc.name === splitLocation[0] && (!splitLocation[1] || (loc.country === splitLocation[1]))) {
 					result = [loc.id, loc.name, loc.country];
 					skip = true;
 				}

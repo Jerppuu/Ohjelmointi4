@@ -3,7 +3,7 @@ function TodayPreview(props) {
 	const serverAddr = props.configs.serverAddr
 	const serverPort = props.configs.serverPort
 	const apiImgs = props.configs.apiImgs
-
+	const locationNameCutOff = 20;
 	// {
 	// "date":"2021-05-05",
 	// "symbol":"d300",
@@ -24,6 +24,8 @@ function TodayPreview(props) {
 	let previewLocation = props.location[0];
 	if (props.location[1]!=="Suomi")
 		previewLocation = `${previewLocation}, ${props.location[1]}`;
+	if (previewLocation.length > locationNameCutOff)
+		previewLocation = `${previewLocation.slice(0,locationNameCutOff)}...`;
 
 	return(
 		<div className="todayView">
