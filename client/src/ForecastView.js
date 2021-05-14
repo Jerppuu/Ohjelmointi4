@@ -5,16 +5,32 @@ function ForecastView(props) {
 
 	const [switchMainView, setSwitchMainView] = useState(false);
 	const [switchWeekView, setSwitchWeekView] = useState(false);
-	const [, setDayNum] = useState(0);
-	const [hourNum, setHourNum] = useState(0);
+	const [dayNum, setDayNum] = useState(0);
+	const daily = props.daily;
+	let hourly = null;
 	const maxDays = 14;
-	const maxHours = 168;
-	let daily = props.daily;
-	let hourly = props.hourly;
 
 	const serverAddr = props.configs.serverAddr
 	const serverPort = props.configs.serverPort
 	const apiImgs = props.configs.apiImgs
+
+	if (props.hourly!==null && hourly===null) hourly = parseDaySpesific(props.hourly);
+
+	function parseDaySpesific(hourly) {
+		let entriesByDay = new Map();
+		hourly.forEach(entry => {
+			let day = entry.time.split("T")[0];
+			if (!entriesByDay.has(day))
+				entriesByDay.set(day,[entry]);
+			else {
+				let entries = entriesByDay.get(day);
+				entries.push(entry);
+				entriesByDay.set(day,entries);
+			}
+		});
+		return Array.from(entriesByDay);
+
+	}
 
 	function getDayName(date) {
 		let names = [
@@ -43,9 +59,9 @@ function ForecastView(props) {
 	}
 	function createDays(start,end,disabled) {
 		let content = [];
-		for (let j = start-1; j < (end); j++) {
+		for (let j = start; j <= (end); j++) {
 			let item;
-			!disabled? 	item = 	<button className="day" onClick={() => {setSwitchMainView(!switchMainView);setDayNum(j);setHourNum(24*j)}} >
+			!disabled? 	item = 	<button className="day" onClick={() => {setSwitchMainView(!switchMainView);setDayNum(j);}} >
 									{getDayForecast(daily[j])}
 								</button> :
 						item = 	<button className="dayNextWeek">
@@ -72,16 +88,17 @@ function ForecastView(props) {
 		let imglink_var = path_var + hour.symbol + ".png";
 		let hour_var = new Date(hour.time).getHours();
 		return 	<div>
-					{getDayName(hour.time)} {hour_var}:00
+					{hour_var}:00
 					<img src={imglink_var} alt="hourweather" height={"50px"}/>
 					{hour.temperature}°C
 				</div>
 	}
-	function createHours(start,end) {
+	function createHours() {
 		let content = [];
-		for (let j = start; j < (end + 1); j=j+2) {
+		for (let i=0;i<=hourly[dayNum][1].length-1;i=i+2)
+		{
 			content.push(	<button className="hour">
-								{getHourForecast(hourly[j])}
+								{getHourForecast(hourly[dayNum][1][i])}
 							</button>
 			);
 		}
@@ -95,13 +112,13 @@ function ForecastView(props) {
 				<div className={switchMainView? "hidden" : ""}>
 					<div className={switchWeekView? "hidden" : ""}>
 						<div className="weekdays">
-							{createDays(1,7,false)}
+							{createDays(0,7,false)}
 						</div>
 					</div>
 
 						<div className={switchWeekView? "" : "hidden"}>
 							<div className="weekdays">
-								{createDays(8,maxDays,true)}
+								{createDays(8,maxDays-1,true)}
 							</div>
 						</div>
 
@@ -112,13 +129,16 @@ function ForecastView(props) {
 					</div>
 				</div>
 				<div className={switchMainView? "" : "hidden"}>
+					<div className="dayheader">
+						{getDayName(hourly[dayNum][1][0].time)}
+					</div>
 					<div className="dayhours">
-						{createHours(hourNum,hourNum+12)}
+						{createHours()}
 					</div>
 					<div className="nav">
-						<button onClick={()=>{setHourNum(hourNum -24)}} className="navButton" disabled={hourNum <= 0}>Edellinen</button>
+						<button onClick={()=>{setDayNum(dayNum -1)}} className="navButton" disabled={dayNum <= 0}>Edellinen</button>
 						<button onClick={()=>{setSwitchMainView(!switchMainView)}} className="navButton" >Takaisin</button>
-						<button onClick={()=>{setHourNum(hourNum +24)}}  className="navButton" disabled={hourNum >= maxHours-24}>Seuraava</button>
+						<button onClick={()=>{setDayNum(dayNum +1)}}  className="navButton" disabled={dayNum >= 7}>Seuraava</button>
 					</div>
 				</div>
 			</div>
