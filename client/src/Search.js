@@ -10,7 +10,7 @@ for (let i = 0; i < kunnat.length; i++) {
 function Search(props) {
 	const inputCity = useRef();
 	const [errorState, setErrorState] = useState(false);
-	const delayInMs = 1000; //= 1 seconds
+	const delayms = 1000; //= 1 seconds
 
 	function handleSearch() {
 		const city = inputCity.current.value;
@@ -23,15 +23,13 @@ function Search(props) {
 					inputCity.current.value = null;
 					break;
 				case 1:
-				case 2:
 					setErrorState(true);
 					inputCity.current.value = null;
 					setTimeout(function () {
 						setErrorState(false)
-						props.setAppErrorState(0);
-					}, delayInMs);
-
+					}, delayms);
 					break;
+				case 2:
 				case 3:
 				case 4:
 			}

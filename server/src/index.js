@@ -23,7 +23,7 @@ const ForecaApiForecastHourly = '/api/v1/forecast/hourly/';
 const ForecaAPiCurrent = '/api/v1/current/';
 
 // Shared secret with Foreca
-const token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9wZmEuZm9yZWNhLmNvbVwvYXV0aG9yaXplXC90b2tlbiIsImlhdCI6MTYyMDg4OTQ4NywiZXhwIjoxNjIwOTMyNjg3LCJuYmYiOjE2MjA4ODk0ODcsImp0aSI6IjIwYzYxM2Q4NjE3MGYwMmYiLCJzdWIiOiJha2tlcGVra2EiLCJmbXQiOiJYRGNPaGpDNDArQUxqbFlUdGpiT2lBPT0ifQ.rKhN5872L1piQRaucCUbcO5-3d1QOnfloEY3LwlV0No";
+const token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9wZmEuZm9yZWNhLmNvbVwvYXV0aG9yaXplXC90b2tlbiIsImlhdCI6MTYyMDk3MTAwNiwiZXhwIjoxNjIxMDE0MjA2LCJuYmYiOjE2MjA5NzEwMDYsImp0aSI6ImQ2MjlkOTM1OTViZmE0YWYiLCJzdWIiOiJha2tlcGVra2EiLCJmbXQiOiJYRGNPaGpDNDArQUxqbFlUdGpiT2lBPT0ifQ.JPYyA8O2EQJrv9gTIEAY3lEXgN0Y_BmNJA3gj_6MSP4";
 
 /// please flip the switch bitch
 const debugOn = true; // false true; // send dummy jsons
@@ -45,6 +45,8 @@ app.use(express.static(path.join(__dirname, "../../client/build")));
 app.get(apiLocation, (req, res) => {
 	if (debugOn) {
 		res.json(dummyForecast);
+		//res.sendStatus(404);
+		res.end();
 		return;
 	}
 	res.setTimeout(timeoutms, () => errorCatch([3, "timeout"], apiLocation, res));

@@ -50,7 +50,7 @@ class App extends Component {
             <div>
             <div className="header">
                 <Logo/>
-                <Search getForecast = {getForecast} setAppErrorState = {setErrorState}/>
+                <Search getForecast = {getForecast}/>
                 <button onClick={() => this.setToast()}>Click me</button>
                 {this.state.notification && (
                     <Toast
