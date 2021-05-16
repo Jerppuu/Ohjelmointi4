@@ -1,38 +1,16 @@
-import {Component, useEffect, useRef} from "react";
-const mapImgURL = "http://localhost:3002/imgs/map.png"
+import {useEffect, useRef} from "react";
+import {store} from "react-notifications-component";
 
-const serverPort = 3002;
-const serverAddr = "http://localhost:"
-const api = "/api/map";
+function Map(props){
 
-// TODO: finish map
-
-async function getMapForecast() {
-	var requestOptions = {
-		method: 'GET',
-		redirect: 'follow'
-	};
-	return fetch(serverAddr + serverPort + api, requestOptions)
-		.then(response => {
-			switch (response.status) {
-				case 200:
-					return response.json();
-				case 400:
-					throw "server err";
-				case 404:
-					throw "not found";
-				case 408:
-					throw "request timeout"
-				default:
-					throw "unhandled server err";
-			}})
-		.catch(error => console.log('error', error));
-}
-
-function Map(){
+	const serverAddr = props.configs.serverAddr
+	const serverPort = props.configs.serverPort
+	const mapImg = props.configs.mapImg
+	const apiImgs = props.configs.apiImgs
 
 	const canvasRef = useRef(null);
 	const imageRef = useRef(null);
+
 	useEffect(() => {
 		const canvas = canvasRef.current;
 		const ctx = canvas.getContext("2d");
@@ -40,61 +18,80 @@ function Map(){
 
 		image.onload = () => {
 			ctx.drawImage(image, 0, 0, 400, 900, 0, 0, 250, 475);
-			getMapForecast()
+			props.getMapForecast()
 				.then(result => {
+					let date = new Date(result.map[0].time)
+					ctx.font = "18px DejaVu Sans";
+					ctx.fillText(`Tänään ${date.getHours()}:${date.getMinutes()}`, 0,20);
+					ctx.font = "20px DejaVu Sans";
 					result.map.forEach(
 						(loc) => {
-							let symbolImg = new Image(50, 50);
-							symbolImg.src = "http://localhost:3002/imgs/" + loc.symbol + ".png";
-							ctx.drawImage(symbolImg, 0, 0, 150, 150, loc.map[1], loc.map[2], 50, 50);
-							ctx.font = "25px DejaVu Sans";
-							ctx.fillText(loc.temperature + "°C", loc.map[1], loc.map[2]+70);
+							let symbolImg = new Image(40, 40);
+							symbolImg.onload = () => {
+								ctx.drawImage(symbolImg, 0, 0, 150, 150, loc.map[1], loc.map[2], 50, 50);
+								if (loc.temperature>24)ctx.fillStyle = "red";
+								else if (loc.temperature<-20)ctx.fillStyle = "blue";
+								else ctx.fillStyle = "black";
+								ctx.fillText(loc.temperature + "°C", loc.map[1], loc.map[2]+70);
+							}
+							symbolImg.src = serverAddr + serverPort + apiImgs + loc.symbol + ".png";
 						}
 					)
+				})
+				.catch(error => {
+					store.addNotification({
+						title: 'Meidän Virhe!',
+						message: error.usermessage,
+						type: 'warning',                         // 'default', 'success', 'info', 'warning'
+						container: 'bottom-right',                // where to position the notifications
+						animationIn: ["animated", "fadeIn"],     // animate.css classes that's applied
+						animationOut: ["animated", "fadeOut"],   // animate.css classes that's applied
+						dismiss: {
+							duration: 5000
+						}
+					});
+
 				});
 			}
-	})
+	});
 
-		return (
-				<>
-					<div className="map">
-						<canvas ref={canvasRef} width={"250px"} height={"475px"}/>
-						<img ref={imageRef} src={mapImgURL} className={"hidden"}/>
-					</div>
-				</>
-			);
+	return (
+			<>
+				<div className="map">
+					<canvas ref={canvasRef} width={"250px"} height={"500px"}/>
+					<img ref={imageRef} src={serverAddr+serverPort+apiImgs+mapImg} className={"hidden"} alt={"Sääkartta"}/>
+				</div>
+			</>
+		);
 
 }
 
 export default Map;
 
-/*
-<div className="map">
-	<img src={kartta} alt="Map"/>
-</div>
-*/
-
 /*{
- {
-	"map":
-		{
-			"time":"2021-05-11T13:47+03:00",
-			"symbol":"d300",
-			"symbolPhrase":"cloudy",
-			"temperature":15,
-			"feelsLikeTemp":15,
-			"relHumidity":75,
-			"dewPoint":11,
-			"windSpeed":3,
-			"windDirString":"SW",
-			"windGust":10,
-			"precipProb":6,
-			"precipRate":0,
-			"cloudiness":87,
-			"thunderProb":0,
-			"uvIndex":2,
-			"pressure":1012.05,
-			"visibility":33539
- 	}
+ "map":[
+    {
+      "time":"2021-05-11T13:47+03:00",
+      "symbol":"d300",
+      "symbolPhrase":"cloudy",
+      "temperature":15,
+      "feelsLikeTemp":15,
+      "relHumidity":75,
+      "dewPoint":11,
+      "windSpeed":3,
+      "windDirString":"SW",
+      "windGust":10,
+      "precipProb":6,
+      "precipRate":0,
+      "cloudiness":87,
+      "thunderProb":0,
+      "uvIndex":2,
+      "pressure":1012.05,
+      "visibility":33539,
+      "map":["Sodankylä",110,110]},
+    }
+    ,
+    ...
+    ]
 }
  */

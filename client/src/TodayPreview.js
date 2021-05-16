@@ -1,9 +1,9 @@
-import React from 'react';
-
-const imgURL = "http://localhost:3002/imgs/";
-
 function TodayPreview(props) {
 
+	const serverAddr = props.configs.serverAddr
+	const serverPort = props.configs.serverPort
+	const apiImgs = props.configs.apiImgs
+	const locationNameCutOff = 20;
 	// {
 	// "date":"2021-05-05",
 	// "symbol":"d300",
@@ -14,22 +14,22 @@ function TodayPreview(props) {
 	// "windDir":55
 	// }
 
-	let weekdays = [
-		"Sunnuntai", "Maanantai", "Tiistai", "Keskiviikko", "Torstai", "Perjantai", "Lauantai"
-	];
-
-	let weekday = weekdays[new Date(props.daily.date).getDay()]; // results in day abbr.
-	let imglink = imgURL + props.daily.symbol + ".png";
+	let imgURL = serverAddr + serverPort + apiImgs + props.daily.symbol + ".png";
 	let tempAvg = ((props.daily.maxTemp + props.daily.minTemp) / 2).toFixed(0);
+	let previewLocation = props.location[0];
+	if (props.location[1]!=="Suomi")
+		previewLocation = `${previewLocation}, ${props.location[1]}`;
+	if (previewLocation.length > locationNameCutOff)
+		previewLocation = `${previewLocation.slice(0,locationNameCutOff)}...`;
 
-	return (
+	return(
 		<div className="todayView">
 			<div>
-				<p style={{fontSize: "20pt", margin: "10px"}}>{props.municipality} nyt </p>
+				<p style={{fontSize: "20pt", margin: "10px"}}>{previewLocation} nyt </p>
 				<p style={{fontSize: "20pt", margin: "10px"}}>{tempAvg}°C</p>
 			</div>
 			<div>
-				<img src={imglink} alt="weather" height={"75px"}/>
+				<img src={imgURL} alt="weather" height={"75px"}/>
 			</div>
 
 		</div>
