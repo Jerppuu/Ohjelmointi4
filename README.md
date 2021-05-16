@@ -1,11 +1,12 @@
 # Node Express Server
 
-The server has been configured to run from http://localhost:3001 . \
-It will serve a webpage from project root ./client/build/index.html \
-It can respond to API calls through http://localhost:3001/api/search/:location . \
-At the moment the location name starts with an uppercase letter.\
+The server has been configured to run from http://localhost:3002 . \
+It will serve a webpage from  /client/build/index.html \
+It can respond to API calls through http://localhost:3002/api/search/:location and http://localhost:3002/api/map. \
+At the moment the location name starts with an uppercase letter and can be specified with a country name separated by a comma.\
 
-## preinstalled components
+## Preinstalled components
+Server has been developed with NPM v7.11.0 and NodeJS v14.16.1
 
 npm i express node-fetch\
 \
@@ -13,60 +14,28 @@ Optionally for running as a live server:\
 \
 npm i nodemon
 
-## running the server
+## Running the server
 
 from project root:\
 \
 nodemon ./server/src/index.js\
             or\
-node ./server/src/index.js
-
-## getting data from server to client
- \
-a couple of ideas to get data from server \
- \
-FETCH: \
-var requestOptions = { \
-  method: 'GET', \
-  redirect: 'follow' \
-}; \
-fetch("localhost:3001/api/search/Oulu", requestOptions) \
-  .then(response => response.text()) \
-  .then(result => console.log(result)) \
-  .catch(error => console.log('error', error)); \
+node ./server/src/index.js\
 \
-JQUERY: \
-var settings = { \
-  "url": "localhost:3001/api/search/Oulu", \
-  "method": "GET", \
-  "timeout": 0, \
-}; \
+To receive data from Foreca api it is necessary to have valid credentials to fetch appropriate tokens from Foreca servers. These are not provided. The valid token with refresh and expire dates are fetched by the server from server/src/configs.json.
+
+## Server modes
+
+### Production mode
+(default)               The server uses tokens to fetch data for the client from Foreca locations, forecasts, current weather.
+-d --debug              The server returns dummy files for client, search and map, ignoring everything else.
+
+# React Client
+
+## Preinstalled components
+Server has been developed with NPM v7.11.0\
 \
-$.ajax(settings).done(function (response) { \
-  console.log(response); \
-}); \
-\
-XHR: \
-var xhr = new XMLHttpRequest(); \
-xhr.withCredentials = true; \
- \
-xhr.addEventListener("readystatechange", function() { \
-  if(this.readyState === 4) { \
-    console.log(this.responseText); \
-  } \
-}); \
- \
-xhr.open("GET", "localhost:3001/api/search/Oulu"); \
- \
-xhr.send();
-
-# Getting Started with Create React App
-
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
-
-## Available Scripts
-
-In the project directory, you can run:
+npm install react react-notifications-component animate.css\
 
 ### `npm start`
 
@@ -76,11 +45,6 @@ Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 The page will reload if you make edits.\
 You will also see any lint errors in the console.
 
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
 ### `npm run build`
 
 Builds the app for production to the `build` folder.\
@@ -88,45 +52,3 @@ It correctly bundles React in production mode and optimizes the build for the be
 
 The build is minified and the filenames include the hashes.\
 Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
