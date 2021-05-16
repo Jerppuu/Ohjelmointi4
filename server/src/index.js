@@ -9,6 +9,7 @@ const cors = require('cors');
 const app = express();
 const port = 3002;
 
+// TODO: If the async loop would work at the map interface, we wouldn't need this
 // municipalities on client's map, (name,x(px),y(px))
 const mapLocations = [["Utsjoki", 130, 20], ["Sodankylä", 110, 120], ["Oulu", 110, 220], ["Seinäjoki", 160, 310], ["Joensuu", 50, 310], ["Helsinki", 80, 420]];
 // in case of Foreca server times out
@@ -26,15 +27,23 @@ const ForecaApiForecastHourly = '/api/v1/forecast/hourly/';
 const ForecaAPiCurrent = '/api/v1/current/';
 
 // Shared secret with Foreca
-const token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9wZmEuZm9yZWNhLmNvbVwvYXV0aG9yaXplXC90b2tlbiIsImlhdCI6MTYyMDk3MTAwNiwiZXhwIjoxNjIxMDE0MjA2LCJuYmYiOjE2MjA5NzEwMDYsImp0aSI6ImQ2MjlkOTM1OTViZmE0YWYiLCJzdWIiOiJha2tlcGVra2EiLCJmbXQiOiJYRGNPaGpDNDArQUxqbFlUdGpiT2lBPT0ifQ.JPYyA8O2EQJrv9gTIEAY3lEXgN0Y_BmNJA3gj_6MSP4";
+const configs = require("./configs.json");//const token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9wZmEuZm9yZWNhLmNvbVwvYXV0aG9yaXplXC90b2tlbiIsImlhdCI6MTYyMDk3MTAwNiwiZXhwIjoxNjIxMDE0MjA2LCJuYmYiOjE2MjA5NzEwMDYsImp0aSI6ImQ2MjlkOTM1OTViZmE0YWYiLCJzdWIiOiJha2tlcGVra2EiLCJmbXQiOiJYRGNPaGpDNDArQUxqbFlUdGpiT2lBPT0ifQ.JPYyA8O2EQJrv9gTIEAY3lEXgN0Y_BmNJA3gj_6MSP4";
+const token = configs.token.token;
 
-/// please flip the switch bitch
-const debugOn = true; // false true; // send dummy jsons
+// checks process arguments and set debugMode as necessary
+let debugOn = checkArgs();
 
 app.listen(port, () => {
 	let debug = "";
 	if (debugOn) debug = "(debug)";
-	console.log(`${new Date().toLocaleString()} >> Express app ${debug} listening at http://localhost:${port}`);
+	else {
+		let leftEpoch = new Date(configs.token.expire).getTime() - Date.now();
+		let leftHours = Math.floor(leftEpoch/3600000);
+		let leftMinutes = Math.floor((leftEpoch-leftHours*3600000)/60000)
+		console.log(`${new Date().toISOString()} >> Express app${debug} listening at http://localhost:${port}`);
+		console.log(`Token was last updated on ${configs.token.updated}, the token is valid until ${configs.token.expire} (time left ${leftHours}h ${leftMinutes}min).`);
+		console.log(`If token has expired, contact admin ${configs.admin.mail} to refresh the token or for other questions.`);
+	}
 });
 
 // TODO: Cors has NOT been configured securely!
@@ -47,8 +56,8 @@ app.use(express.static(path.join(__dirname, "../../client/build")));
 // API for client's forecast search
 app.get(apiLocation, (req, res) => {
 	if (debugOn) {
-		res.json(dummyForecast);
-		//res.sendStatus(404);
+		//res.json(dummyForecast);
+		res.sendStatus(400);
 		res.end();
 		return;
 	}
@@ -70,7 +79,7 @@ app.get(apiLocation, (req, res) => {
 
 // API for client's map
 // TODO: The async Loop would push data correctly, but response is sent after 2/4 fetches. Explicit fetch below works fine.
-// TODO: supports at the moment 6 locations! If async loop would work, client could request any number and location it wishes.
+// TODO: supports at the moment 6 locations! If the async loop would work, client could request any number and location it wishes.
 app.get(apiMap, (req, res) => {
 	if (debugOn) {
 		//res.sendStatus(404)
@@ -177,7 +186,6 @@ async function getLocation(location, token) {
 	};
 
 	let splitLocation = location.split(",");
-	// TODO: Returns the first match it gets from the response locations list
 	// if you need more detailed dataset use an additional argument: ?dataset=full
 	return fetch(encodeURI(ForecaAddr + ForecaApiLocationSearch + splitLocation[0] + "?lang=fi"), requestOptions)
 		.then(response => responseCatch(response))
@@ -187,6 +195,8 @@ async function getLocation(location, token) {
 			response.locations.forEach(loc => {
 				if (skip) return;
 				console.log(splitLocation[0],splitLocation[1],loc.country);
+				//  if only a location name is given, return the first result
+				// if both the name and country is given, return the first match that satisfies both
 				if (loc.name === splitLocation[0] && (!splitLocation[1] || (loc.country === splitLocation[1]))) {
 					result = [loc.id, loc.name, loc.country];
 					skip = true;
@@ -253,7 +263,7 @@ async function getCurrent(id, token) {
 		});
 }
 
-// handle the response from fetch, check code and act accordingly. Returns JSON object or throws an error.
+// handle the response from fetch, check code and act accordingly. Returns a JSON object or throws an error.
 async function responseCatch(response) {
 	switch (response.status) {
 		case 200:
@@ -293,10 +303,34 @@ function errorCatch(error, context, res) {
 			res.sendStatus(429).end;
 			console.log("Foreca Rate Limited error (", context, "):", error);
 			return;
+		case SomethingExplodedError:
+			res.sendStatus(500).end;
+			console.log("Somewhere something exploded, spread out and search for clues: (", context, "):", error);
+			return;
 		default:
 			res.sendStatus(500).end;
 			console.log("General Express Server error (", context, "):", error);
 	}
+}
+// Determine start arg validity and server debug mode
+function checkArgs(){
+	switch (process.argv.length) {
+		case 2:
+			return false;
+		case 3:
+			if (process.argv[2] === "-d" || process.argv[2] == "--debug")
+				return true; // if true send dummy jsons
+		default:
+			usage()
+			process.exit(1);
+	}
+}
+
+function usage(){
+	console.log("usage: node path/to/index.js [options]\n" +
+		"\toptions:\n" +
+		"\t\t-d, --debug		Start the server in debug mode.\n\n" +
+		"Debug mode: Returns dummy.jsons to client instead of querying the Foreca servers.");
 }
 
 class LocationNotFoundError extends Error {
@@ -357,7 +391,7 @@ class InvalidTokenError extends Error {
 	constructor(message) {
 		super(message);
 		this.name = "InvalidTokenError";
-		this.code = 6;
+		this.code = 7;
 		this.message = message;
 	}
 }

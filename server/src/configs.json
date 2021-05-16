@@ -1,0 +1,10 @@
+{
+  "token": {
+    "updated":  "2021-05-16T13:27:44.062Z",
+    "expire": "2021-05-17T07:27:44.063Z",
+    "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9wZmEuZm9yZWNhLmNvbVwvYXV0aG9yaXplXC90b2tlbiIsImlhdCI6MTYyMTE2MzM5MSwiZXhwIjoxNjIxMjA2NTkxLCJuYmYiOjE2MjExNjMzOTEsImp0aSI6IjFkZmRjM2ZiNjI5ZWFkOWUiLCJzdWIiOiJha2tlcGVra2EiLCJmbXQiOiJYRGNPaGpDNDArQUxqbFlUdGpiT2lBPT0ifQ.mKJZpOmFA7csgaannfOnBpBG1ON86LOap2hxVanQKeU"
+  },
+  "admin": {
+    "mail" : "aktorman@student.oulu.fi"
+  }
+}
