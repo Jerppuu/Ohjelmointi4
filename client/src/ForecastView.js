@@ -137,7 +137,7 @@ function ForecastView(props) {
 					</div>
 					<div className="nav">
 						<button onClick={()=>{setDayNum(dayNum -1)}} className="navButton" disabled={dayNum <= 0}>Edellinen</button>
-						<button onClick={()=>{setSwitchMainView(!switchMainView)}} className="navButton" >Takaisin</button>
+						<button onClick={()=>{setSwitchMainView(!switchMainView)}} className="navButton">Takaisin</button>
 						<button onClick={()=>{setDayNum(dayNum +1)}}  className="navButton" disabled={dayNum >= 7}>Seuraava</button>
 					</div>
 				</div>

@@ -3,22 +3,22 @@
   "name": "Yet another weather app",
   "icons": [
     {
-      "src": "favicon.ico",
+      "src": "favicons/favicon.ico",
       "sizes": "96x96 32x32 16x16",
       "type": "image/png"
     },
     {
-      "src": "apple-icon.png",
+      "src": "favicons/apple-icon.png",
       "type": "image/png",
       "sizes": "60x60 76x76 114x114 144x144 152x152 180x180"
     },
     {
-      "src": "ms-icon.png",
+      "src": "favicons/ms-icon.png",
       "type": "image/png",
       "sizes": "70x70 144x144 150x150 310x310"
     },
     {
-      "src": "android-icon.png",
+      "src": "favicons/android-icon-192x192.png",
       "type": "image/png",
       "sizes": "36x36 48x48 72x72 96x96 144x144 192x192"
     }

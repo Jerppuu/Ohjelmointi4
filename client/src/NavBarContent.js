@@ -25,8 +25,8 @@ function NavBarContent(props) {
                     <b>Ohjeet</b>
                     <p>
                         Hakeminen: Kirjoita hakupalkkiin haluamasi kunnan nimi. Huomaa, että kunta pitää olla täysin
-                        oikein kirjoitettu,
-                        jotta se löytyy tietokannasta.
+                        oikein kirjoitettu, jotta se löytyy tietokannasta. Voit halutessasi hakea tarkemmin esimerkiksi
+                        kansainvälisiä kohteita kirjoittamalla paikkakunnan ja maan. Esimerkiksi: Tukholma,Ruotsi.
                     </p>
                     <p>
                         Viikkonäkymä: Viikkonäkymässä voit kulkea nykyisen ja seuraavan viikon väliä

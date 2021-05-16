@@ -7,7 +7,6 @@ import TodayPreview from "./TodayPreview";
 import ForecastView from "./ForecastView";
 import NavBarContent from "./NavBarContent";
 import Search from "./Search";
-import ErrorNotification from "./ErrorNotification";
 import {LocationNotFoundError,OurGatewayError,ForecaTimeoutError,TooManyRequestsError,SomethingExplodedError} from "./Errors";
 import configs from "./configs.json";
 
@@ -26,14 +25,12 @@ class App extends Component {
             hourly : null,
             location : startLocation, // [locationCity,locationCountry]
             popup: 0,
-            error: 0,
-            notification: false
+            error: 0
         };
+        // TODO: no-func-assign
         getForecast = getForecast.bind(this);
         togglePopup = togglePopup.bind(this);
         responseCatch = responseCatch.bind(this);
-        setErrorState = setErrorState.bind(this);
-        console.log()
     }
 
     componentDidMount() {
@@ -62,7 +59,6 @@ class App extends Component {
                     <button onClick={()=>togglePopup(2)} className="bottomButton">Ohjeet</button>
                 </nav>
                     <NavBarContent mode={this.state.popup} togglePopup ={togglePopup}/>
-                {this.state.error>1?<ErrorNotification/>:<div/>}
             </div>
         );
     }
@@ -72,9 +68,6 @@ export default App;
 
 function togglePopup(mode){
     this.setState({popup: mode});
-}
-function setErrorState(mode) {
-    this.setState({error:mode});
 }
 
 async function getForecast(cityName_var){
@@ -89,9 +82,8 @@ async function getForecast(cityName_var){
             this.setState({daily: response[0]});
             this.setState({hourly: response[1]});
             this.setState({location: response[2]});
-            return 0;
         }).catch(error => {
-            return error;
+            throw error;
         });
 }
 
@@ -110,39 +102,48 @@ async function getMapForecast() {
     };
     return fetch(serverAddr + serverPort + apiMap, requestOptions)
         .then(response => responseCatch(response))
-        .catch(error => console.log('getMapForecast:', error));
+        .catch(error => {
+            throw error;
+        });
 }
 
 function responseCatch(response){
-        switch (response.status) {
-            case 200:
-                const contentType = response.headers.get("content-type");
-                if (contentType && contentType.indexOf("application/json") !== -1) {
-                    if (this.setState!==0)
-                        this.setState({error:0});
-                    return response.json()
-                }
-                this.setState({error:2})
-                throw new OurGatewayError();
-            case 404:
-                if (this.setState!==1)
-                    this.setState({error:1});
-                throw new LocationNotFoundError();
-            case 500:
-                if (this.setState!==2)
-                    this.setState({error:2});
-                throw new OurGatewayError();
-            case 504:
-                if (this.setState!==3)
-                    this.setState({error:3});
-                throw new ForecaTimeoutError();
-            case 429:
-                if (this.setState!==4)
-                    this.setState({error:4});
-                throw new TooManyRequestsError();
-            default:
-                if (this.setState!==5)
-                    this.setState({error:5});
-                throw new SomethingExplodedError();
-        }
+    let error = null;
+    switch (response.status) {
+        case 200:
+            const contentType = response.headers.get("content-type");
+            if (contentType && contentType.indexOf("application/json") !== -1) {
+                if (this.setState!==0)
+                    this.setState({error:0});
+                return response.json()
+            }
+            this.setState({error:2})
+            error = new OurGatewayError(response.toString(),"Meidän palvelin ei tällä hetkellä toimi suunnitellusti. Yritä hetken päästä uudestaan!");
+            break;
+        case 404:
+            if (this.setState!==1)
+                this.setState({error:1});
+            throw new LocationNotFoundError();
+        case 500:
+            if (this.setState!==2)
+                this.setState({error:2});
+            error = new OurGatewayError(response.toString(),"Meidän palvelin ei tällä hetkellä toimi suunnitellusti. Yritä hetken päästä uudestaan!");
+            break;
+        case 504:
+            if (this.setState!==3)
+                this.setState({error:3});
+            error = new ForecaTimeoutError(response.toString(),"Forecan palvelin ei tällä hetkellä toimi suunnitellusti. Yritä hetken päästä uudestaan!");
+            break;
+        case 429:
+            if (this.setState!==4)
+                this.setState({error:4});
+            error = new TooManyRequestsError(response.toString(),"Forecan palvelimellemme suunnattu kiintiö on täyttymässä. Yritä 10 min päästä uudestaan!");
+            break;
+        default:
+            if (this.setState!==5)
+                this.setState({error:5});
+            error = new SomethingExplodedError(response.toString(),"Jotain räjähti, tätä viesitä ei pitäisi pitäisi päästä näkymään sinulle. Ota yhteyttä ylläpitoon GitHub:ssa.");
+            break;
+    }
+    throw error;
 }

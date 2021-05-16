@@ -1,4 +1,5 @@
 import {useEffect, useRef} from "react";
+import {store} from "react-notifications-component";
 
 function Map(props){
 
@@ -19,12 +20,15 @@ function Map(props){
 			ctx.drawImage(image, 0, 0, 400, 900, 0, 0, 250, 475);
 			props.getMapForecast()
 				.then(result => {
+					let date = new Date(result.map[0].time)
+					ctx.font = "18px DejaVu Sans";
+					ctx.fillText(`Tänään ${date.getHours()}:${date.getMinutes()}`, 0,20);
+					ctx.font = "20px DejaVu Sans";
 					result.map.forEach(
 						(loc) => {
 							let symbolImg = new Image(40, 40);
 							symbolImg.onload = () => {
 								ctx.drawImage(symbolImg, 0, 0, 150, 150, loc.map[1], loc.map[2], 50, 50);
-								ctx.font = "20px DejaVu Sans";
 								if (loc.temperature>24)ctx.fillStyle = "red";
 								else if (loc.temperature<-20)ctx.fillStyle = "blue";
 								else ctx.fillStyle = "black";
@@ -34,7 +38,20 @@ function Map(props){
 						}
 					)
 				})
-				.catch(error => console.log("Map.js: ", error));
+				.catch(error => {
+					store.addNotification({
+						title: 'Meidän Virhe!',
+						message: error.usermessage,
+						type: 'warning',                         // 'default', 'success', 'info', 'warning'
+						container: 'bottom-right',                // where to position the notifications
+						animationIn: ["animated", "fadeIn"],     // animate.css classes that's applied
+						animationOut: ["animated", "fadeOut"],   // animate.css classes that's applied
+						dismiss: {
+							duration: 5000
+						}
+					});
+
+				});
 			}
 	});
 

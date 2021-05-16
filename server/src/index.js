@@ -56,9 +56,8 @@ app.use(express.static(path.join(__dirname, "../../client/build")));
 // API for client's forecast search
 app.get(apiLocation, (req, res) => {
 	if (debugOn) {
-		//res.json(dummyForecast);
-		res.sendStatus(400);
-		res.end();
+		res.json(dummyForecast).end;
+		//res.sendStatus(504).end;
 		return;
 	}
 	res.setTimeout(timeoutms, () => errorCatch(ForecaTimeoutError, apiLocation, res));
@@ -82,9 +81,8 @@ app.get(apiLocation, (req, res) => {
 // TODO: supports at the moment 6 locations! If the async loop would work, client could request any number and location it wishes.
 app.get(apiMap, (req, res) => {
 	if (debugOn) {
-		//res.sendStatus(404)
-		res.json(dummyMap);
-		res.end;
+		res.json(dummyMap).end;
+		//res.sendStatus(504).end
 		return;
 	}
 	let responseJSON = {map: []};
@@ -127,8 +125,7 @@ app.get(apiMap, (req, res) => {
 			}))
 		.then(() => {
 			if (!res.headersSent) {
-				res.json(responseJSON);
-				res.end;
+				res.json(responseJSON).end;
 			}
 		})
 		.catch(error => errorCatch(error, apiMap, res));
@@ -143,9 +140,6 @@ app.get(apiMap, (req, res) => {
 	const loop = async () => {
 		await asyncForEach(mapLocations, async (location) => {
 			await getLocation(location, token)
-				.then(result => {
-					switch (result) {
-						case 0:
 							throw 0;
 						case 1:
 							throw 1;
@@ -194,7 +188,6 @@ async function getLocation(location, token) {
 			// the result may return multiple locations, check the search String against them and return the right one
 			response.locations.forEach(loc => {
 				if (skip) return;
-				console.log(splitLocation[0],splitLocation[1],loc.country);
 				//  if only a location name is given, return the first result
 				// if both the name and country is given, return the first match that satisfies both
 				if (loc.name === splitLocation[0] && (!splitLocation[1] || (loc.country === splitLocation[1]))) {

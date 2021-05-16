@@ -2,6 +2,9 @@ import {useRef, useState} from "react";
 import Parser from 'html-react-parser';
 import kunnat from "./other/kunnat";
 import {LocationNotFoundError} from "./Errors";
+import { store } from 'react-notifications-component';
+import 'react-notifications-component/dist/theme.css';
+import 'animate.css';
 
 let options = '';
 for (let i = 0; i < kunnat.length; i++) {
@@ -11,31 +14,38 @@ for (let i = 0; i < kunnat.length; i++) {
 function Search(props) {
 	const inputCity = useRef();
 	const [errorState, setErrorState] = useState(false);
-	const delayms = 1000; //= 1 seconds
+	const delayms = 1000;
 
 	function handleSearch() {
-		console.log()
 		const city = inputCity.current.value;
 		if (city === '') return;
-		props.getForecast(city).then(error => {
+		props.getForecast(city).then(() => {
 			inputCity.current.value = null;
-			if (error===0) {
-				setErrorState(false);
-				return;
-			}
-			switch (error.constructor) {
-				case LocationNotFoundError:
-					setErrorState(true);
-					inputCity.current.value = null;
-					setTimeout(function () {
-						setErrorState(false)
-					}, delayms);
-					return;
-				default:
-					// TODO: REMEMBER TO CODE THIS BEFORE THE RETURN
-					console.log("Should we handle this in Search?",error)
-			}
-		});
+			setErrorState(null);
+			}).catch(error => {
+				switch (error.constructor) {
+					case LocationNotFoundError:
+						setErrorState(true);
+						inputCity.current.value = null;
+						setTimeout(function () {setErrorState(false)}, delayms);
+						return;
+					default:
+						setErrorState(true);
+						inputCity.current.value = null;
+						setTimeout(function () {setErrorState(false)}, delayms);
+						store.addNotification({
+							title: 'Meidän Virhe!',
+							message: error.usermessage,
+							type: 'warning',                         // 'default', 'success', 'info', 'warning'
+							container: 'bottom-right',                // where to position the notifications
+							animationIn: ["animated", "fadeIn"],     // animate.css classes that's applied
+							animationOut: ["animated", "fadeOut"],   // animate.css classes that's applied
+							dismiss: {
+								duration: 5000
+							}
+						});
+				}
+			});
 	}
 
 	function handleKeyPress(e){
@@ -47,7 +57,7 @@ function Search(props) {
 	return (
 		<div>
 			<input className={errorState? "searchInputError" : "searchInput"}
-				   placeholder={errorState? "Yritä uudelleen!" : "Syötä kaupunki..."}
+				   placeholder={errorState? "Yritä uudelleen..." : "Syötä kaupunki..."}
 				   ref={inputCity} list={"paikkakunta-lista"} id={"valitse-paikkakunta"}
 				   onKeyDown={handleKeyPress} type="text"/>
 			<datalist id={"paikkakunta-lista"}>
