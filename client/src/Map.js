@@ -1,6 +1,5 @@
 import {useEffect, useRef} from "react";
 
-// TODO: Does not render properly. Temperature renders fine, but images are left missing. ATM server helps out by delaying dummy JSONs.
 function Map(props){
 
 	const serverAddr = props.configs.serverAddr

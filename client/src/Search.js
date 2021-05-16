@@ -32,6 +32,7 @@ function Search(props) {
 					}, delayms);
 					return;
 				default:
+					// TODO: REMEMBER TO CODE THIS BEFORE THE RETURN
 					console.log("Should we handle this in Search?",error)
 			}
 		});
@@ -45,7 +46,10 @@ function Search(props) {
 	}
 	return (
 		<div>
-			<input className={errorState? "searchInputError" : "searchInput"} placeholder={errorState? "Yritä uudelleen!" : "Syötä kaupunki..."} ref={inputCity} list={"paikkakunta-lista"} id={"valitse-paikkakunta"} onKeyDown={handleKeyPress} type="text"/>
+			<input className={errorState? "searchInputError" : "searchInput"}
+				   placeholder={errorState? "Yritä uudelleen!" : "Syötä kaupunki..."}
+				   ref={inputCity} list={"paikkakunta-lista"} id={"valitse-paikkakunta"}
+				   onKeyDown={handleKeyPress} type="text"/>
 			<datalist id={"paikkakunta-lista"}>
 				{Parser(options)}
 			</datalist>
