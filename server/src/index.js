@@ -248,13 +248,12 @@ async function getCurrent(id, token) {
 		},
 		redirect: 'follow'
 	};
-	//TODO: TEST TOOMANYREQS
-	return setTimeout(fetch(ForecaAddr + ForecaAPiCurrent + id, requestOptions)
+	return fetch(ForecaAddr + ForecaAPiCurrent + id, requestOptions)
 		.then(response => responseCatch(response))
 		.then(response => response.current)
 		.catch(error => {
 			throw error
-		}),100);
+		});
 }
 
 // handle the response from fetch, check code and act accordingly. Returns a JSON object or throws an error.
